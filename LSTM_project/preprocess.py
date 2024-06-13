@@ -1,8 +1,12 @@
 import os
 import music21 as m21
+import json
 
 KERN_DATASET_PATH = "deutschl/test"
 SAVE_DIR = "dataset"
+SINGLE_FILE_DATASET = "file_dataset"
+MAPPING_PATH = "mapping.json"
+SEQUENCE_LENGTH = 64
 
 # durations are expressed in quarter length
 ACCEPTABLE_DURATIONS = [
@@ -125,20 +129,71 @@ def preprocess(dataset_path):
             fp.write(encoded_song)
 
 
-if __name__ == "__main__":
+def load(file_path):
+    with open(file_path, "r") as fp:
+        song = fp.read()
+    return song
 
-    # load songs
-    songs = load_songs_in_kern(KERN_DATASET_PATH)
-    print(f"Loaded {len(songs)} songs.")
-    song = songs[0]
 
-    print(f"Has acceptable duration? {has_acceptable_durations(song, ACCEPTABLE_DURATIONS)}")
+def create_single_file_dataset(dataset_path, file_dataset_path, sequence_length):
+    """Generates a file collating all the encoded songs and adding new piece delimiters.
 
+    :param dataset_path (str): Path to folder containing the encoded songs
+    :param file_dataset_path (str): Path to file for saving songs in single file
+    :param sequence_length (int): # of time steps to be considered for training
+    :return songs (str): String containing all songs in dataset + delimiters
+    """
+
+    new_song_delimiter = "/ " * sequence_length
+    songs = ""
+
+    # load encoded songs and add delimiters
+    for path, _, files in os.walk(dataset_path):
+        for file in files:
+            file_path = os.path.join(path, file)
+            song = load(file_path)
+            songs = songs + song + " " + new_song_delimiter
+
+    # remove empty space from last character of string
+    songs = songs[:-1]
+
+    # save string that contains all the dataset
+    with open(file_dataset_path, "w") as fp:
+        fp.write(songs)
+
+    return songs
+
+
+def create_mapping(songs, mapping_path):
+    """Creates a json file that maps the symbols in the song dataset onto integers
+
+    :param songs (str): String with all songs
+    :param mapping_path (str): Path where to save mapping
+    :return:
+    """
+    mappings = {}
+
+    # identify the vocabulary
+    songs = songs.split()
+    vocabulary = list(set(songs))
+
+    # create mappings
+    for i, symbol in enumerate(vocabulary):
+        mappings[symbol] = i
+
+    # save voabulary to a json file
+    with open(mapping_path, "w") as fp:
+        json.dump(mappings, fp, indent=4)
+
+
+def main():
     preprocess(KERN_DATASET_PATH)
+    songs = create_single_file_dataset(SAVE_DIR, SINGLE_FILE_DATASET, SEQUENCE_LENGTH)
+    create_mapping(songs, MAPPING_PATH)
 
-    # transpose song
-    transposed_song = transpose(song)
-    #transposed_song.show()
+
+if __name__ == "__main__":
+    main()
 
 
 
