@@ -1,6 +1,8 @@
 import os
 import music21 as m21
 import json
+import numpy as np
+import tensorflow.keras as keras
 
 KERN_DATASET_PATH = "deutschl/test"
 SAVE_DIR = "dataset"
@@ -185,12 +187,63 @@ def create_mapping(songs, mapping_path):
     with open(mapping_path, "w") as fp:
         json.dump(mappings, fp, indent=4)
 
+def convert_songs_to_int(songs):
+    int_songs = []
+
+    # load mappings
+    with open(MAPPING_PATH, "r") as fp:
+        mappings = json.load(fp)
+
+    # transform songs string to list
+    songs = songs.split()
+
+    # map songs to int
+    for symbol in songs:
+        int_songs.append(mappings[symbol])
+
+    return int_songs
+
+
+def generate_training_sequences(sequence_length):
+    """Create input and output data samples for training. Each sample is a sequence.
+    # [11,12,13,24] -> i:[11,12] t: [13], i: [12,13] t: [14], ...
+
+    :param sequence_length (int): Length of each sequence. With a quantisation at 16th notes, 64 notes equates to 4 bars
+
+    :return inputs (ndarray): Training inputs
+    :return targets (ndarray): Training targets
+    """
+
+    # load songs and map them to int
+    songs = load(SINGLE_FILE_DATASET)
+    int_songs = convert_songs_to_int(songs)
+
+    inputs = []
+    targets = []
+
+    # generate the training sequences
+    # e.g. 100 symbols, 64 sl -> 100-64 = 36
+    num_sequences = len(int_songs) - sequence_length
+    for i in range(num_sequences):
+        inputs.append(int_songs[i:i+sequence_length])
+        targets.append(int_songs[i+sequence_length])
+
+    # one-hot encode the sequences
+    # [0,1,2] -> [ [1,0,0], [0,1,0], [0,0,1] ]
+    vocabulary_size = len(set(int_songs))
+    # inputs size: (# of sequences, sequence length, vocabulary size)
+    inputs = keras.utils.to_categorical(inputs, num_classes=vocabulary_size)
+    targets = np.array(targets)
+
+    return inputs, targets
+
 
 def main():
     preprocess(KERN_DATASET_PATH)
     songs = create_single_file_dataset(SAVE_DIR, SINGLE_FILE_DATASET, SEQUENCE_LENGTH)
     create_mapping(songs, MAPPING_PATH)
-
+    inputs, targets = generate_training_sequences(SEQUENCE_LENGTH)
+    a=1
 
 if __name__ == "__main__":
     main()
