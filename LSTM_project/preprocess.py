@@ -1,10 +1,10 @@
 import os
-import music21 as m21
 import json
+import music21 as m21
 import numpy as np
 import tensorflow.keras as keras
 
-KERN_DATASET_PATH = "deutschl/test"
+KERN_DATASET_PATH = "deutschl/erk"
 SAVE_DIR = "dataset"
 SINGLE_FILE_DATASET = "file_dataset"
 MAPPING_PATH = "mapping.json"
@@ -81,28 +81,44 @@ def transpose(song):
     tranposed_song = song.transpose(interval)
     return tranposed_song
 
-def encode_song(song, time_step = 0.25):
-    # p = 60, d = 1.0 -> [60, "_", "_", "_"]
+
+def encode_song(song, time_step=0.25):
+    """Converts a score into a time-series-like music representation. Each item in the encoded list represents 'min_duration'
+    quarter lengths. The symbols used at each step are: integers for MIDI notes, 'r' for representing a rest, and '_'
+    for representing notes/rests that are carried over into a new time step. Here's a sample encoding:
+
+        ["r", "_", "60", "_", "_", "_", "72" "_"]
+
+    :param song (m21 stream): Piece to encode
+    :param time_step (float): Duration of each time step in quarter length
+    :return:
+    """
 
     encoded_song = []
 
     for event in song.flat.notesAndRests:
+
         # handle notes
         if isinstance(event, m21.note.Note):
             symbol = event.pitch.midi # 60
+        # handle rests
         elif isinstance(event, m21.note.Rest):
             symbol = "r"
 
         # convert the note/rest into time series notation
         steps = int(event.duration.quarterLength / time_step)
         for step in range(steps):
+
+            # if it's the first time we see a note/rest, let's encode it. Otherwise, it means we're carrying the same
+            # symbol in a new time step
             if step == 0:
                 encoded_song.append(symbol)
             else:
                 encoded_song.append("_")
 
-    # cast encoded song to a str
+    # cast encoded song to str
     encoded_song = " ".join(map(str, encoded_song))
+
     return encoded_song
 
 
@@ -129,6 +145,9 @@ def preprocess(dataset_path):
         save_path = os.path.join(SAVE_DIR, str(i))
         with open(save_path, "w") as fp:
             fp.write(encoded_song)
+
+        if i % 10 == 0:
+            print(f"Song {i} out of {len(songs)} processed")
 
 
 def load(file_path):
@@ -187,6 +206,7 @@ def create_mapping(songs, mapping_path):
     with open(mapping_path, "w") as fp:
         json.dump(mappings, fp, indent=4)
 
+
 def convert_songs_to_int(songs):
     int_songs = []
 
@@ -206,7 +226,6 @@ def convert_songs_to_int(songs):
 
 def generate_training_sequences(sequence_length):
     """Create input and output data samples for training. Each sample is a sequence.
-    # [11,12,13,24] -> i:[11,12] t: [13], i: [12,13] t: [14], ...
 
     :param sequence_length (int): Length of each sequence. With a quantisation at 16th notes, 64 notes equates to 4 bars
 
@@ -222,18 +241,18 @@ def generate_training_sequences(sequence_length):
     targets = []
 
     # generate the training sequences
-    # e.g. 100 symbols, 64 sl -> 100-64 = 36
     num_sequences = len(int_songs) - sequence_length
     for i in range(num_sequences):
         inputs.append(int_songs[i:i+sequence_length])
         targets.append(int_songs[i+sequence_length])
 
     # one-hot encode the sequences
-    # [0,1,2] -> [ [1,0,0], [0,1,0], [0,0,1] ]
     vocabulary_size = len(set(int_songs))
     # inputs size: (# of sequences, sequence length, vocabulary size)
     inputs = keras.utils.to_categorical(inputs, num_classes=vocabulary_size)
     targets = np.array(targets)
+
+    print(f"There are {len(inputs)} sequences.")
 
     return inputs, targets
 
@@ -242,11 +261,10 @@ def main():
     preprocess(KERN_DATASET_PATH)
     songs = create_single_file_dataset(SAVE_DIR, SINGLE_FILE_DATASET, SEQUENCE_LENGTH)
     create_mapping(songs, MAPPING_PATH)
-    inputs, targets = generate_training_sequences(SEQUENCE_LENGTH)
-    a=1
+    #inputs, targets = generate_training_sequences(SEQUENCE_LENGTH)
+
 
 if __name__ == "__main__":
     main()
-
 
 
