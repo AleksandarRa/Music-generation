@@ -5,9 +5,9 @@ OUTPUT_UNITS = 18
 NUM_UNITS = [256]
 LOSS = "sparse_categorical_crossentropy"
 LEARNING_RATE = 0.001
-EPOCHS = 50
+EPOCHS = 40
 BATCH_SIZE = 64
-SAVE_MODEL_PATH = "model.h5"
+SAVE_MODEL_PATH = "model"+str(EPOCHS) + ".h5"
 
 
 def build_model(output_units, num_units, loss, learning_rate):
