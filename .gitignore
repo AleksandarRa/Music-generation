@@ -1,12 +1,21 @@
 *.mid
 *.h5
-.idea/*
+*.npz
+*.zip
+# ignore any subfolder named 
+**/__pycache__/
+**/.idea/
 
 # LTSM_project
-LSTM_project/.idea/
-LSTM_project/__pycache__/
 LSTM_project/dataset/
 LSTM_project/deutschl/
 LSTM_project/file_dataset
 LSTM_project/mapping.json
 LSTM_project/mel.mscz
+
+# transformer-XL project
+transformer-xl/.idea/*
+transformer-xl/npz_music/*
+transformer-xl/generated_samples/
+transformer-xl/checkpoints_music/
+transformer-xl/maestro/
