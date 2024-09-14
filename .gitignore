@@ -1,0 +1,12 @@
+*.mid
+*.h5
+.idea/*
+
+# LTSM_project
+LSTM_project/.idea/
+LSTM_project/__pycache__/
+LSTM_project/dataset/
+LSTM_project/deutschl/
+LSTM_project/file_dataset
+LSTM_project/mapping.json
+LSTM_project/mel.mscz
