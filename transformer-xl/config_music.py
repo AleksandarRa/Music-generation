@@ -34,6 +34,11 @@ n_heads_sound = 6
 n_heads_delta = 4
 n_heads_combined = n_heads_sound + n_heads_delta
 
+# For lstm layer
+n_units_sound = 6
+n_units_delta = 4
+n_heads_combined = n_heads_sound + n_heads_delta
+
 n_layers_sound = 3
 n_layers_delta = 3
 n_layers_combined = 6
