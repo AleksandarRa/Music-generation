@@ -24,7 +24,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
                             help='Number of epochs between saved checkpoints')
 
-    arg_parser.add_argument('-n', '--n_files', type=int, default=8,
+    arg_parser.add_argument('-n', '--n_files', type=int, default=10,
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
@@ -203,7 +203,7 @@ if __name__ == '__main__':
                       ('loss', loss_metric.result())]
 
             # Open the file in append mode and write the values
-            with open('logs/logs.csv', mode='a', newline='') as file:
+            with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
                 writer = csv.writer(file)
                 # Write the values as a row
                 #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -215,11 +215,11 @@ if __name__ == '__main__':
         if epoch % args.checkpoint_period == 0:
 
             checkpoint_path = os.path.join(
-                args.checkpoint_dir, f'checkpoint{epoch}.weights.h5')
+                args.checkpoint_dir, f'transformerXL/transformerXL_checkpoint{epoch}.weights.h5')
             model.save_weights(checkpoint_path)
 
             optimizer_path = os.path.join(
-                args.checkpoint_dir, f'optimizer{epoch}.npy')
+                args.checkpoint_dir, f'transformerXL/transformerXL_optimizer{epoch}.npy')
             # np.save(optimizer_path, optimizer.get_weights())
 
             print(f'Saved model weights at {checkpoint_path}')
