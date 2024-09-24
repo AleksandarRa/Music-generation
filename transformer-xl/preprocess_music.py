@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     args = arg_parser.parse_args()
     # to download the dataset
-    # args.download = True
+    args.download = True
     if args.download:
         if not pathlib.Path(args.midi_dir).exists():
             pathlib.Path(args.midi_dir).mkdir(parents=True, exist_ok=True)
