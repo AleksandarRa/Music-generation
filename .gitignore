@@ -5,6 +5,9 @@
 # ignore any subfolder named 
 **/__pycache__/
 **/.idea/
+*.midi
+*.png
+*.csv
 
 # LTSM_project
 LSTM_project/dataset/
@@ -19,3 +22,4 @@ transformer-xl/npz_music/*
 transformer-xl/generated_samples/
 transformer-xl/checkpoints_music/
 transformer-xl/maestro/
+tranformer-xl/generated_midis_gitRepo/text/
