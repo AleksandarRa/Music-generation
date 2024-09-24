@@ -14,11 +14,11 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument('n_songs', type=int,
-                            help='Number of files to generate')
+    arg_parser.add_argument('-n', '--n_songs', type=int,
+                            help='Number of files to generate', default=3)
 
-    arg_parser.add_argument('checkpoint_path', type=str,
-                            help='Path to the saved weights')
+    arg_parser.add_argument('-c', '--checkpoint_path', type=str,
+                            help = 'Path to the saved weights', default = "checkpoints_music/transformerXL/transformerXL_checkpoint30.weights.h5")
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory with the npz files')
@@ -39,6 +39,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
                             help='If activated, the attention weights will be saved as images')
+
 
     args = arg_parser.parse_args()
 
