@@ -1,3 +1,5 @@
+import csv
+
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -22,7 +24,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
                             help='Number of epochs between saved checkpoints')
 
-    arg_parser.add_argument('-n', '--n_files', type=int, default=None,
+    arg_parser.add_argument('-n', '--n_files', type=int, default=10,
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
@@ -48,7 +50,7 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    tf.config.experimental_run_functions_eagerly(False)
+    tf.config.run_functions_eagerly(False)
 
     idx_to_time = get_quant_time()
 
@@ -140,9 +142,9 @@ if __name__ == '__main__':
         progress_bar = tf.keras.utils.Progbar(batches_per_epoch, stateful_metrics=[
             'acc_sound', 'acc_delta', 'loss'])
 
-        loss_metric.reset_states()
-        acc_metric_sound.reset_states()
-        acc_metric_delta.reset_states()
+        loss_metric.reset_state()
+        acc_metric_sound.reset_state()
+        acc_metric_delta.reset_state()
 
         for batch_ragged in dataset:
 
@@ -195,21 +197,30 @@ if __name__ == '__main__':
 
             # training for this batch is over
 
-            values = [('acc_sound', acc_metric_sound.result()),
+            values = [('epoch', epoch),
+                      ('acc_sound', acc_metric_sound.result()),
                       ('acc_delta', acc_metric_delta.result()),
                       ('loss', loss_metric.result())]
+
+            # Open the file in append mode and write the values
+            with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
+                writer = csv.writer(file)
+                # Write the values as a row
+                #writer.writerow([name for name, result in values])  # Headers (Optional)
+                # Write the actual numeric values
+                writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
             progress_bar.add(1, values=values)
 
         if epoch % args.checkpoint_period == 0:
 
             checkpoint_path = os.path.join(
-                args.checkpoint_dir, f'checkpoint{epoch}.h5')
+                args.checkpoint_dir, f'transformerXL/transformerXL_checkpoint{epoch}.weights.h5')
             model.save_weights(checkpoint_path)
 
             optimizer_path = os.path.join(
-                args.checkpoint_dir, f'optimizer{epoch}.npy')
-            np.save(optimizer_path, optimizer.get_weights())
+                args.checkpoint_dir, f'transformerXL/transformerXL_optimizer{epoch}.npy')
+            # np.save(optimizer_path, optimizer.get_weights())
 
             print(f'Saved model weights at {checkpoint_path}')
-            print(f'Saved optimizer weights at {optimizer_path}')
+            #print(f'Saved optimizer weights at {optimizer_path}')

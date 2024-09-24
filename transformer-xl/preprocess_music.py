@@ -20,7 +20,8 @@ if __name__ == '__main__':
                             help='If activated the MAESTRO dataset will be downloaded (mandatory for the first time)')
 
     args = arg_parser.parse_args()
-
+    # to download the dataset
+    # args.download = True
     if args.download:
         if not pathlib.Path(args.midi_dir).exists():
             pathlib.Path(args.midi_dir).mkdir(parents=True, exist_ok=True)
@@ -40,7 +41,6 @@ if __name__ == '__main__':
     # ============================================================
 
     if args.download:
-
         pathlib.Path(args.midi_dir).mkdir(parents=True, exist_ok=True)
         print('Downloading dataset...')
         dload.save_unzip(config.dataset_url, args.midi_dir)
@@ -52,6 +52,7 @@ if __name__ == '__main__':
         ext_filenames = pathlib.Path(args.midi_dir).rglob(ext)
         ext_filenames = list(map(lambda x: str(x), ext_filenames))
         midi_filenames += ext_filenames
+
     print(f'Found {len(midi_filenames)} midi files')
     assert len(midi_filenames) > 0
 
