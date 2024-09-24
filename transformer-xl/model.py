@@ -50,7 +50,7 @@ class Relative_multi_head_attention(tf.keras.layers.Layer):
         input dims -> (seq_len, num_heads, l, m)
         output dims -> (seq_len, num_heads, l, m)
         """
-
+        assert len(arr.shape) == 4, "Expected input to have 4 dimensions."
         batch_size, num_heads, l, m = arr.shape
         zeros = tf.zeros((batch_size, num_heads, l, 1), dtype=arr.dtype)
         arr = tf.concat((arr, zeros), axis=-1)
@@ -254,8 +254,12 @@ class Transformer_block(tf.keras.layers.Layer):
         x_tilde = self.layer_norm1(x_tilde)
         # attention_res -> (batch_size, seq_len, d_model)
 
+
         rmha_output, weight_list, attention_loss = self.rmha(
-            x_tilde, seq_len, mask, rel_enc)
+            inputs=x_tilde,
+            seq_len=seq_len,
+            mask=mask,
+            rel_enc=rel_enc)
         rmha_output = self.dropout1(rmha_output, training=training)
         # rmha_output -> (batch_size, seq_len, d_model)
 
@@ -442,7 +446,11 @@ class Music_transformer(tf.keras.Model):
             next_mem_list.append(next_mem)
 
             sounds, attention_weights, attention_loss = layer(
-                sounds, mem_list[idx], mask, rel_enc_sound, training)
+                inputs=sounds,
+                mem=mem_list[idx],
+                mask=mask,
+                rel_enc=rel_enc_sound,
+                training=training)
             attention_weight_list.append(attention_weights)
             attention_loss_list.append(attention_loss)
         # sounds -> (batch_size, seq_len, d_sound)
@@ -457,7 +465,11 @@ class Music_transformer(tf.keras.Model):
             next_mem_list.append(next_mem)
 
             deltas, attention_weights, attention_loss = layer(
-                deltas, mem_list[idx], mask, rel_enc_delta, training)
+                inputs=deltas,
+                mem=mem_list[idx],
+                mask=mask,
+                rel_enc=rel_enc_delta,
+                training=training)
             attention_weight_list.append(attention_weights)
             attention_loss_list.append(attention_loss)
         # deltas -> (batch_size, seq_len, d_delta)
@@ -470,7 +482,11 @@ class Music_transformer(tf.keras.Model):
             next_mem_list.append(next_mem)
 
             x, attention_weights, attention_loss = layer(
-                x, mem_list[idx], mask, rel_enc_combined, training)
+                inputs=x,
+                mem=mem_list[idx],
+                mask=mask,
+                rel_enc=rel_enc_combined,
+                training=training)
             attention_weight_list.append(attention_weights)
             attention_loss_list.append(attention_loss)
         # x -> (batch_size, seq_len, d_combined)
@@ -550,7 +566,7 @@ class Music_transformer(tf.keras.Model):
             model.load_weights(checkpoint_path)
             print(f'Loaded model weights from {checkpoint_path}')
 
-        optimizer = tf.keras.optimizers.Adam(lr=config.lr)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=config.lr)
 
         if not optimizer_path is None:
 
