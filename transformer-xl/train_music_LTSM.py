@@ -123,6 +123,10 @@ if __name__ == '__main__':
     seq_len = config.seq_len
     max_segs_per_batch = config.max_segs_per_batch
 
+    acc_sound_values = []
+    acc_delta_values = []
+    loss_values = []
+
     for epoch in range(1, n_epochs + 1):
 
         print(f"\nEpoch {epoch}/{n_epochs}")
@@ -180,22 +184,23 @@ if __name__ == '__main__':
 
                 start += seq_len
 
-            # training for this batch is over
+            acc_sound_values.append(acc_metric_sound.result().numpy())
+            acc_delta_values.append(acc_metric_delta.result().numpy())
+            loss_values.append(loss_metric.result().numpy())
 
-            values = [('epoch', epoch),
-                      ('acc_sound', acc_metric_sound.result()),
-                      ('acc_delta', acc_metric_delta.result()),
-                      ('loss', loss_metric.result())]
+        # training for this batch is over
+        values = [('epoch', epoch),
+                  ('acc_sound', sum(acc_sound_values) / len(acc_sound_values)),
+                  ('acc_delta', sum(acc_delta_values) / len(acc_delta_values)),
+                  ('loss', sum(loss_values) / len(loss_values))]
 
-            # Open the file in append mode and write the values
-            with open('logs/logs_LSTM.csv', mode='a', newline='') as file:
-                writer = csv.writer(file)
-                # Write the values as a row
-                #writer.writerow([name for name, result in values])  # Headers (Optional)
-                # Write the actual numeric values
-                writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
-
-            progress_bar.add(1, values=values)
+        # Open the file in append mode and write the values
+        with open('logs/logs_LSTM.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            # Write the values as a row
+            # writer.writerow([name for name, result in values])  # Headers (Optional)
+            # Write the actual numeric values
+            writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
         if epoch % args.checkpoint_period == 0:
 
