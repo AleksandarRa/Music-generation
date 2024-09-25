@@ -24,7 +24,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
                             help='Number of epochs between saved checkpoints')
 
-    arg_parser.add_argument('-n', '--n_files', type=int, default=10,
+    arg_parser.add_argument('-n', '--n_files', type=int, default=8,
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
@@ -135,12 +135,13 @@ if __name__ == '__main__':
     mem_len = config.mem_len
     max_segs_per_batch = config.max_segs_per_batch
 
+    acc_sound_values = []
+    acc_delta_values = []
+    loss_values = []
+
     for epoch in range(1, n_epochs + 1):
 
         print(f"\nEpoch {epoch}/{n_epochs}")
-
-        progress_bar = tf.keras.utils.Progbar(batches_per_epoch, stateful_metrics=[
-            'acc_sound', 'acc_delta', 'loss'])
 
         loss_metric.reset_state()
         acc_metric_sound.reset_state()
@@ -195,25 +196,26 @@ if __name__ == '__main__':
 
                 start += seq_len
 
-            # training for this batch is over
+            acc_sound_values.append(acc_metric_sound.result().numpy())
+            acc_delta_values.append(acc_metric_delta.result().numpy())
+            loss_values.append(loss_metric.result().numpy())
 
-            values = [('epoch', epoch),
-                      ('acc_sound', acc_metric_sound.result()),
-                      ('acc_delta', acc_metric_delta.result()),
-                      ('loss', loss_metric.result())]
 
-            # Open the file in append mode and write the values
-            with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
-                writer = csv.writer(file)
-                # Write the values as a row
-                #writer.writerow([name for name, result in values])  # Headers (Optional)
-                # Write the actual numeric values
-                writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
+        # training for this batch is over
+        values = [('epoch', epoch),
+                  ('acc_sound', sum(acc_sound_values) / len(acc_sound_values)),
+                  ('acc_delta', sum(acc_delta_values) / len(acc_delta_values)),
+                  ('loss', sum(loss_values) / len(loss_values))]
 
-            progress_bar.add(1, values=values)
+        # Open the file in append mode and write the values
+        with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            # Write the values as a row
+            # writer.writerow([name for name, result in values])  # Headers (Optional)
+            # Write the actual numeric values
+            writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
         if epoch % args.checkpoint_period == 0:
-
             checkpoint_path = os.path.join(
                 args.checkpoint_dir, f'transformerXL/transformerXL_checkpoint{epoch}.weights.h5')
             model.save_weights(checkpoint_path)
