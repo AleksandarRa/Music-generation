@@ -8,7 +8,7 @@ import argparse
 import os
 import pathlib
 import matplotlib.pyplot as plt
-
+import time
 
 if __name__ == '__main__':
 
@@ -80,11 +80,23 @@ if __name__ == '__main__':
     model, _ = Music_transformer.build_from_config(
         config=config, checkpoint_path=args.checkpoint_path)
 
+    # Record the start time
+    start_time = time.time()
+    print(f"Start time: {time.ctime(start_time)}")
+
     midi_list, _, attention_weight_list, _ = generate_midis(model=model, seq_len=config.seq_len,
                                                             mem_len=config.mem_len, max_len=args.gen_len,
                                                             parser=midi_parser, filenames=filenames_sample,
                                                             pad_idx=config.pad_idx, top_k=args.top_k,
                                                             temp=args.temp)
+
+    # Record the end time
+    end_time = time.time()
+    print(f"End time: {time.ctime(end_time)}")
+
+    # Calculate the time difference
+    time_diff = end_time - start_time
+    print(f"Time taken: {time_diff:.2f} seconds")
 
     for midi, filename in zip(midi_list, midi_filenames):
         midi.save(filename)
