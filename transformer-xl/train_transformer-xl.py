@@ -196,16 +196,12 @@ if __name__ == '__main__':
 
                 start += seq_len
 
-            acc_sound_values.append(acc_metric_sound.result().numpy())
-            acc_delta_values.append(acc_metric_delta.result().numpy())
-            loss_values.append(loss_metric.result().numpy())
+            # training for this batch is over
 
-
-        # training for this batch is over
-        values = [('epoch', epoch),
-                  ('acc_sound', sum(acc_sound_values) / len(acc_sound_values)),
-                  ('acc_delta', sum(acc_delta_values) / len(acc_delta_values)),
-                  ('loss', sum(loss_values) / len(loss_values))]
+            values = [('epoch', epoch),
+                      ('acc_sound', acc_metric_sound.result()),
+                      ('acc_delta', acc_metric_delta.result()),
+                      ('loss', loss_metric.result())]
 
         # Open the file in append mode and write the values
         with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
