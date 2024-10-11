@@ -18,13 +18,13 @@ if __name__ == '__main__':
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory where the npz files are stored')
 
-    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music',
+    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music/LSTM/',
                             help='Directory where the saved weights will be stored')
 
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
                             help='Number of epochs between saved checkpoints')
 
-    arg_parser.add_argument('-n', '--n_files', type=int, default=8,
+    arg_parser.add_argument('-n', '--n_files', type=int, default=None,
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
