@@ -48,7 +48,7 @@ mem_len = 384
 
 batch_size = 8
 dropout_rate = 0.1
-n_epochs = 30
+n_epochs = 60 
 max_segs_per_batch = 20
 lr = 0.00002
 

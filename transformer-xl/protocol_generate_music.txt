@@ -1,0 +1,7 @@
+﻿# Transformer XL
+## First model
+Time with 30 epochs. 1 output song, 300 song length
+Loaded model weights from checkpoints_music/transformerXL/transformerXL_checkpoint30.weights.h5
+Start time: Wed Sep 25 15:45:49 2024
+End time: Wed Sep 25 15:46:47 2024
+Time taken: 58.09 seconds
