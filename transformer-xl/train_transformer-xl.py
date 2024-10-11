@@ -19,7 +19,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory where the npz files are stored')
 
-    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music',
+    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music/transformerXL/',
                             help='Directory where the saved weights will be stored')
 
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
