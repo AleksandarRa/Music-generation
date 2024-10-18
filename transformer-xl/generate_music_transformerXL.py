@@ -3,14 +3,13 @@ from model import Music_transformer
 import config_music as config
 from utils import get_quant_time, generate_midis
 import numpy as np
-import tensorflow as tf
 import argparse
 import os
 import pathlib
 import matplotlib.pyplot as plt
 import time
 
-EPOCH = 200
+CHECKPOINT_EPOCH = 30
 
 if __name__ == '__main__':
 
@@ -20,7 +19,8 @@ if __name__ == '__main__':
                             help='Number of files to generate', default=1)
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
-                            help = 'Path to the saved weights', default = "checkpoints_music/transformerXL/transformerXL_checkpoint" + str(EPOCH) + ".weights.h5")
+                            help = 'Path to the saved weights',
+                             default = "checkpoints_music/transformerXL/transformerXL_checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory with the npz files')
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     assert isinstance(args.temp, float)
     assert args.temp > 0.0
     if args.filenames is None:
-        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(EPOCH) for i in range(1, args.n_songs + 1)]
+        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(CHECKPOINT_EPOCH) for i in range(1, args.n_songs + 1)]
     else:
         midi_filenames = args.filenames
     midi_filenames = [f + '.midi' for f in midi_filenames]
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('*.npz'))
+    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('0.npz'))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
     model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=args.checkpoint_path)
+        config=config, checkpoint_path=None)
 
     # Record the start time
     start_time = time.time()

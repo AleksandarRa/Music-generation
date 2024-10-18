@@ -647,7 +647,9 @@ class Music_transformer(tf.keras.Model):
         mask = self.get_look_ahead_mask(seq_len, mem_len)
         # mask -> (1, 1, seq_len, full_len)
 
+        # get position encoding of size of input
         rel_enc_sound = self.pos_enc[:full_len, :self.d_sound]
+        # reverse encoding position order. Last encoding row is the first, first row becomes the last
         rel_enc_sound = tf.reverse(rel_enc_sound, axis=[0])
         # rel_enc_sound -> (full_len, d_sound)
 

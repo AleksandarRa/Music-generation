@@ -69,21 +69,31 @@ def inputs_to_labels(inputs, pad_idx):
 def get_pos_encoding(seq_len, d_model):
 
     numerator = np.arange(seq_len, dtype=np.float32)
+    # reshape
     numerator = numerator[:, np.newaxis]
 
+    # stepsize=2 to alternate beweent the sine and cosine (used later)
     denominator = np.arange(0, d_model, 2, dtype=np.float32)
+    # normalize denominator
     denominator = denominator / d_model
 
     denominator = np.power(np.array(10000, dtype=np.float32), denominator)
 
+    # invert values -> decreasing values for encoding positions
     denominator = 1 / denominator
+    # duplicate each value to compute sin and cos for each value
     denominator = np.repeat(denominator, 2)
+    # reshape
     denominator = denominator[np.newaxis, :]
 
+    # matrix multiplication of numerator and denominator
     encoding = np.matmul(numerator, denominator)
+    # apply sin for all even indiceses
     encoding[:, ::2] = np.sin(encoding[:, ::2])
+    # apply cos for all odd indiceses
     encoding[:, 1::2] = np.cos(encoding[:, 1::2])
     #encoding = encoding[np.newaxis, ...]
+    # cast to tenforflow variable
     encoding = tf.cast(encoding, dtype=tf.float32)
 
     return encoding
@@ -138,6 +148,8 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
     min_len = min([len(s) for s in sounds])
 
     orig_len = np.random.randint(1, min(2 * mem_len, min_len))
+    #test: set orig_len manually
+    orig_len = seq_len * 2
     assert orig_len >= 1
 
     sounds = np.array([sound[:orig_len] for sound in sounds])
@@ -155,9 +167,8 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
         next_mem_len=mem_len,
         training=False
     )
-
+    # tqdm used to output a process bar
     for _ in tqdm.tqdm(range(max_len)):
-
         outputs_sound = outputs_sound[:, -1, :]
         probs_sound = tf.nn.softmax(outputs_sound, axis=-1).numpy()
         probs_sound[:, pad_idx] = 0
