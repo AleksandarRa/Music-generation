@@ -21,7 +21,8 @@ if __name__ == '__main__':
 
     args = arg_parser.parse_args()
     # to download the dataset
-    args.download = True
+    #args.download = True
+    args.midi_dir = "datasets"
     if args.download:
         if not pathlib.Path(args.midi_dir).exists():
             pathlib.Path(args.midi_dir).mkdir(parents=True, exist_ok=True)
@@ -54,6 +55,7 @@ if __name__ == '__main__':
         midi_filenames += ext_filenames
 
     print(f'Found {len(midi_filenames)} midi files')
+
     assert len(midi_filenames) > 0
 
     if not args.n_files is None:
