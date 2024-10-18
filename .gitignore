@@ -8,6 +8,8 @@
 *.midi
 *.png
 *.csv
+*.wav
+*.xopp
 
 # LTSM_project
 LSTM_project/dataset/
