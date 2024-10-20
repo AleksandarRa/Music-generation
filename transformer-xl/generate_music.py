@@ -28,7 +28,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='generated_midis',
                             help='Directory where the generated midi files will be stored')
 
-    arg_parser.add_argument('-l', '--gen_len', type=int, default=300,
+    arg_parser.add_argument('-l', '--gen_len', type=int, default=500,
                             help='Length of the generated midis (in midi messages)')
 
     arg_parser.add_argument('-k', '--top_k', type=int, default=3)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
 
-    arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
+    arg_parser.add_argument('-v', '--visualize_attention', action='store_true', default = False,
                             help='If activated, the attention weights will be saved as images')
 
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     assert isinstance(args.temp, float)
     assert args.temp > 0.0
     if args.filenames is None:
-        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(CHECKPOINT_EPOCH) for i in range(1, args.n_songs + 1)]
+        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(CHECKPOINT_EPOCH)+"_length_"+str(args.gen_len) for i in range(1, args.n_songs + 1)]
     else:
         midi_filenames = args.filenames
     midi_filenames = [f + '.midi' for f in midi_filenames]
@@ -79,12 +79,17 @@ if __name__ == '__main__':
     idx_to_time = get_quant_time()
 
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
-    model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=None)
 
-    # Record the start time
     start_time = time.time()
     print(f"Start time: {time.ctime(start_time)}")
+    model, _ = Music_transformer.build_from_config(
+        config=config, checkpoint_path=args.checkpoint_path)
+
+    end_time = time.time()
+    print(f"Time taken to loaded the model: {(end_time - start_time):.2f} seconds")
+    # Record the start time
+    start_time = time.time()
+    print(f"Start time for generating: {time.ctime(start_time)}")
 
     midi_list, _, attention_weight_list, _ = generate_midis(model=model, seq_len=config.seq_len,
                                                             mem_len=config.mem_len, max_len=args.gen_len,
@@ -94,11 +99,9 @@ if __name__ == '__main__':
 
     # Record the end time
     end_time = time.time()
-    print(f"End time: {time.ctime(end_time)}")
-
     # Calculate the time difference
     time_diff = end_time - start_time
-    print(f"Time taken: {time_diff:.2f} seconds")
+    print(f"Time taken to generate: {time_diff:.2f} seconds")
 
     for midi, filename in zip(midi_list, midi_filenames):
         midi.save(filename)
