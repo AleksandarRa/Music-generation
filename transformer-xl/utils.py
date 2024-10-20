@@ -129,6 +129,14 @@ def softmax_with_temp(x, temp=1.0):
     return x
 
 
+def saveToBuffer(sound, delta, parser, cnt):
+    path = 'generated_midis/buffer/' + str(cnt) + '_note.midi'
+    midi_file = parser.features_to_midi(sound, delta)
+
+    #for midi, filename in zip(midi_file, path + str(cnt) + "_note.midi"):
+    midi_file.save(path)
+
+
 def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx, top_k=1, temp=1.0):
 
     assert isinstance(seq_len, int)
@@ -167,6 +175,7 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
         next_mem_len=mem_len,
         training=False
     )
+    cnt = 0
     # tqdm used to output a process bar
     for _ in tqdm.tqdm(range(max_len)):
         outputs_sound = outputs_sound[:, -1, :]
@@ -208,12 +217,15 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
         inputs_sound = tf.constant(new_sounds)
         inputs_delta = tf.constant(new_deltas)
 
+        saveToBuffer(inputs_sound, inputs_delta, parser, cnt)
+
         outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
             inputs=(inputs_sound, inputs_delta),
             mem_list=next_mem_list,
             next_mem_len=mem_len,
             training=False
         )
+        cnt += 1
 
     sounds = sounds[:, orig_len:]
     deltas = deltas[:, orig_len:]
