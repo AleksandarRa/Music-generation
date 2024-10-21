@@ -624,13 +624,13 @@ class Music_transformer(tf.keras.Model):
 
         return res
 
-    def call(self, inputs, mem_list, next_mem_len, training):
+    def call(self, inputs, mem_list, next_mem_len, training, alpha = 0):
 
         # sounds -> (batch_size, seq_len)
         # deltas -> (batch_size, seq_len)
         # mem_list : list of (batch_size, mem_len, d_model) or None
         # next_mem_len -> length of the next memory
-
+        # alpha -> used for evaluating to mix input before concatination of delta and sound
         sounds, deltas = inputs
 
         batch_size = sounds.shape[0]
@@ -704,6 +704,22 @@ class Music_transformer(tf.keras.Model):
         # deltas -> (batch_size, seq_len, d_delta)
 
         x = tf.concat((sounds, deltas), axis=-1)
+
+        # evaluating process
+        if alpha != 0:
+            input_sound, input_delta = inputs
+            input_sound_embedded = self.emb_layer_sound(input_sound)
+            input_sound_embedded = sounds * tf.math.sqrt(tf.cast(self.d_sound, tf.float32))
+            input_delta_embedded = self.emb_layer_delta(input_delta)
+            input_delta_embedded = deltas * tf.math.sqrt(tf.cast(self.d_delta, tf.float32))
+            input_concat = tf.concat((input_sound_embedded, input_delta_embedded), axis=-1)
+
+            split_index = int(x.shape[1] * alpha)
+            x_part = x[:, :split_index, :]  # First half from x
+            input_concat_part = input_concat[:, split_index:, :]
+
+            # Concatenate the parts to form the result
+            x = tf.concat([x_part, input_concat_part], axis=1)
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 

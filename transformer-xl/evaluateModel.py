@@ -6,6 +6,7 @@ from utils import shuffle_ragged_2d, inputs_to_labels, get_quant_time
 import tensorflow as tf
 import argparse
 import pathlib
+import numpy as np
 
 CHECKPOINT_EPOCH = 30
 N_FILES = 1
@@ -40,8 +41,8 @@ if __name__ == '__main__':
         file_directory=args.npz_dir, batch_size=BATCHSIZE,
         n_samples=N_FILES, filename=FILENAME)
 
-    #model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=args.weights)
     model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=args.weights)
+    #model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=None)
 
     loss_metric = tf.keras.metrics.Mean(name='loss')
     acc_metric_sound = tf.keras.metrics.SparseCategoricalAccuracy(
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     use_attn_reg = config.use_attn_reg
     values = []
     @tf.function
-    def evaluate_model(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list):
+    def evaluate_model(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list, alpha):
 
         with tf.GradientTape() as tape:
 
@@ -60,7 +61,8 @@ if __name__ == '__main__':
                 inputs=(inputs_sound, inputs_delta),
                 mem_list=None,
                 next_mem_len=mem_len,
-                training=False
+                training=False,
+                alpha=alpha,
             )
 
             if use_attn_reg:
@@ -122,36 +124,40 @@ if __name__ == '__main__':
     seq_len = int(maxlen / 4)
     segs_per_batch = int(min(max_segs_per_batch, maxlen // seq_len))
     mem_list = None
+    alphas = np.linspace(0,1,11)
+    for alpha in alphas:
+        # -100 for rounding error
+        print('alpha: ', alpha)
+        for start in range(0, maxlen - 100, seq_len*2):
+            seg_sound = sound[:, start: start + seq_len]
+            # seg_sound -> (batch_size, seq_len)
+            seg_delta = delta[:, start: start + seq_len]
+            # seg_delta -> (batch_size, seq_len)
 
-    # -100 for rounding error
-    for start in range(0, maxlen - 100, seq_len*2):
-        seg_sound = sound[:, start: start + seq_len]
-        # seg_sound -> (batch_size, seq_len)
-        seg_delta = delta[:, start: start + seq_len]
-        # seg_delta -> (batch_size, seq_len)
+            seg_labels_sound = labels_sound[:,
+                               start: start + seq_len]
+            # seg_labels_sound -> (batch_size, seq_len)
+            seg_labels_delta = labels_delta[:,
+                               start: start + seq_len]
+            # seg_labels_delta -> (batch_size, seq_len)
 
-        seg_labels_sound = labels_sound[:,
-                           start: start + seq_len]
-        # seg_labels_sound -> (batch_size, seq_len)
-        seg_labels_delta = labels_delta[:,
-                           start: start + seq_len]
-        # seg_labels_delta -> (batch_size, seq_len)
+            mem_list = evaluate_model(inputs_sound=seg_sound,
+                                  inputs_delta=seg_delta,
+                                  labels_sound=seg_labels_sound,
+                                  labels_delta=seg_labels_delta,
+                                  mem_list=mem_list,
+                                  alpha = alpha)
 
-        mem_list = evaluate_model(inputs_sound=seg_sound,
-                              inputs_delta=seg_delta,
-                              labels_sound=seg_labels_sound,
-                              labels_delta=seg_labels_delta,
-                              mem_list=mem_list)
+            value = [('Epochs trained', CHECKPOINT_EPOCH),
+                     ('filename', FILENAME),
+                     ('alpha', alpha)
+                     ('range', str(start) + " - " + str(start + seq_len)),
+                     ('acc_sound', acc_metric_sound.result()),
+                     ('acc_delta', acc_metric_delta.result()),
+                     ('loss', loss_metric.result())]
 
-        value = [('Epochs trained', CHECKPOINT_EPOCH),
-                 ('filename', FILENAME),
-                 ('range', str(start) + " - " + str(start + seq_len)),
-                 ('acc_sound', acc_metric_sound.result()),
-                 ('acc_delta', acc_metric_delta.result()),
-                 ('loss', loss_metric.result())]
-
-        with open('logs/evaluateModel.csv', mode='a', newline='') as file:
-            writer = csv.writer(file)
-            #writer.writerow([name for name, result in value])  # Headers
-            writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in value])
+            with open('logs/evaluateModel.csv', mode='a', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow([name for name, result in value])  # Headers
+                writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in value])
 
