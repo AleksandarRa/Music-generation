@@ -129,11 +129,9 @@ def softmax_with_temp(x, temp=1.0):
     return x
 
 
-def saveToBuffer(sound, delta, parser, cnt):
-    path = 'generated_midis/buffer/' + str(cnt) + '_note.midi'
+def saveToBuffer(inputs, parser, path):
+    sound, delta = inputs
     midi_file = parser.features_to_midi(sound, delta)
-
-    #for midi, filename in zip(midi_file, path + str(cnt) + "_note.midi"):
     midi_file.save(path)
 
 
@@ -169,13 +167,20 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
     inputs_sound = tf.constant(sounds[:, -seq_len:])
     inputs_delta = tf.constant(deltas[:, -seq_len:])
 
+    result_sound = sounds[:, :-seq_len]
+    result_delta = deltas[:, :-seq_len]
+    saveToBuffer((sounds, deltas), parser, 'generated_midis/buffer/full_song.midi')
+    saveToBuffer((result_sound, result_delta), parser, 'generated_midis/buffer/input_notes.midi')
+    cut = 200
+    saveToBuffer((result_sound[:, -cut], result_delta[:, -cut]), parser, 'generated_midis/buffer/input_notes_cut'+str(cut)+'.midi')
+
     outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
         inputs=(inputs_sound, inputs_delta),
         mem_list=None,
         next_mem_len=mem_len,
         training=False
     )
-    cnt = 0
+    cnt = 1
     # tqdm used to output a process bar
     for _ in tqdm.tqdm(range(max_len)):
         outputs_sound = outputs_sound[:, -1, :]
@@ -214,10 +219,15 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
         # new_deltas -> (batch_size, 1)
         deltas = np.concatenate((deltas, new_deltas), axis=-1)
 
+        result_sound = np.concatenate((result_sound, new_sounds), axis=-1)
+        result_delta = np.concatenate((result_delta, new_deltas), axis=-1)
+        if cnt % 100 == 0:
+            print('size sound:', result_sound.size)
+            print('size delta:', result_delta.size)
+            saveToBuffer((result_sound, result_delta), parser, 'generated_midis/buffer/' + str(cnt) + '_note.midi')
+
         inputs_sound = tf.constant(new_sounds)
         inputs_delta = tf.constant(new_deltas)
-
-        saveToBuffer(inputs_sound, inputs_delta, parser, cnt)
 
         outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
             inputs=(inputs_sound, inputs_delta),
