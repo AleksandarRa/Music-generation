@@ -206,9 +206,9 @@ class MIDI_parser():
             for features, f in zip(features_list, dst_filenames[idx: idx + batch_size]):
                 self.save_features(features, f)
 
-    def get_tf_dataset(self, file_directory, batch_size, n_samples=None):
+    def get_tf_dataset(self, file_directory, batch_size, n_samples=None, filename='*.npz'):
 
-        filenames = sorted(glob.glob(os.path.join(file_directory, '*.npz')))
+        filenames = sorted(glob.glob(os.path.join(file_directory, filename)))
         assert len(filenames) > 0
 
         if n_samples:
