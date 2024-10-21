@@ -169,10 +169,8 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
 
     result_sound = sounds[:, :-seq_len]
     result_delta = deltas[:, :-seq_len]
-    saveToBuffer((sounds, deltas), parser, 'generated_midis/buffer/full_song.midi')
-    saveToBuffer((result_sound, result_delta), parser, 'generated_midis/buffer/input_notes.midi')
-    cut = 200
-    saveToBuffer((result_sound[:, -cut], result_delta[:, -cut]), parser, 'generated_midis/buffer/input_notes_cut'+str(cut)+'.midi')
+    saveToBuffer((sounds, deltas), parser, 'generated_midis/full_song.midi')
+    saveToBuffer((result_sound, result_delta), parser, 'generated_midis/input_notes.midi')
 
     outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
         inputs=(inputs_sound, inputs_delta),
@@ -221,10 +219,7 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
 
         result_sound = np.concatenate((result_sound, new_sounds), axis=-1)
         result_delta = np.concatenate((result_delta, new_deltas), axis=-1)
-        if cnt % 100 == 0:
-            print('size sound:', result_sound.size)
-            print('size delta:', result_delta.size)
-            saveToBuffer((result_sound, result_delta), parser, 'generated_midis/buffer/' + str(cnt) + '_note.midi')
+        saveToBuffer((new_sounds, new_deltas), parser, 'generated_midis/buffer/' + str(cnt) + '_note.midi')
 
         inputs_sound = tf.constant(new_sounds)
         inputs_delta = tf.constant(new_deltas)
@@ -237,6 +232,7 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
         )
         cnt += 1
 
+    saveToBuffer((result_sound, result_delta), parser, 'generated_midis/input_and_new_notes.midi')
     sounds = sounds[:, orig_len:]
     deltas = deltas[:, orig_len:]
 
