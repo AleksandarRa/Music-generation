@@ -12,6 +12,11 @@ CHECKPOINT_EPOCH = 30
 N_FILES = 1
 BATCHSIZE = 1
 FILENAME = '0.npz'
+CHECKPOINT_NAME = 'checkpoint2_stddev_3_00'
+
+#CHECKPOINT_PATH = 'checkpoints_music/transformerXL/' + CHECKPOINT_NAME + '.h5'
+CHECKPOINT_PATH = 'checkpoints_music/transformerXL/transformerXL_checkpoint' + str(CHECKPOINT_EPOCH) + '.weights.h5'
+
 
 
 @tf.function
@@ -64,7 +69,7 @@ if __name__ == '__main__':
                             help='Directory where the npz files are stored')
 
     arg_parser.add_argument('-w', '--weights', type=str,
-                            default='checkpoints_music/transformerXL/transformerXL_checkpoint' + str(CHECKPOINT_EPOCH) +'.weights.h5', help='Path to saved model weights')
+                            default=CHECKPOINT_PATH , help='Path to saved model weights')
 
     args = arg_parser.parse_args()
 
@@ -139,10 +144,10 @@ if __name__ == '__main__':
             # seg_delta -> (batch_size, seq_len)
 
             seg_labels_sound = labels_sound[:,
-                               start: start + seq_len]
+                               start + 1 + seq_len: start + 1 + (2*seq_len)]
             # seg_labels_sound -> (batch_size, seq_len)
             seg_labels_delta = labels_delta[:,
-                               start: start + seq_len]
+                               start + seq_len: start + (2*seq_len)]
             # seg_labels_delta -> (batch_size, seq_len)
 
             mem_list = evaluate_model(inputs_sound=seg_sound,
