@@ -624,7 +624,7 @@ class Music_transformer(tf.keras.Model):
 
         return res
 
-    def call(self, inputs, mem_list, next_mem_len, training, alpha = 0):
+    def call(self, inputs, mem_list, next_mem_len, training, alpha = 0.0):
 
         # sounds -> (batch_size, seq_len)
         # deltas -> (batch_size, seq_len)
