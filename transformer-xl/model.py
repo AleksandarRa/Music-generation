@@ -624,7 +624,7 @@ class Music_transformer(tf.keras.Model):
 
         return res
 
-    def call(self, inputs, mem_list, next_mem_len, training, alpha = 0.0):
+    def call(self, inputs, mem_list, next_mem_len, training, alpha=0.0):
 
         # sounds -> (batch_size, seq_len)
         # deltas -> (batch_size, seq_len)
@@ -665,8 +665,10 @@ class Music_transformer(tf.keras.Model):
         attention_weight_list = []
         attention_loss_list = []
 
+
         sounds = self.emb_layer_sound(sounds)
         sounds = sounds * tf.math.sqrt(tf.cast(self.d_sound, tf.float32))
+        input_sound_embedded = sounds
         # sounds -> (batch_size, seq_len, d_sound)
 
         for idx, layer in enumerate(self.layer_list_sound):
@@ -686,6 +688,7 @@ class Music_transformer(tf.keras.Model):
 
         deltas = self.emb_layer_delta(deltas)
         deltas = deltas * tf.math.sqrt(tf.cast(self.d_delta, tf.float32))
+        input_delta_embedded = deltas
         # deltas -> (batch_size, seq_len, delta)
 
         for idx, layer in enumerate(self.layer_list_delta, self.n_layers_sound):
@@ -706,12 +709,7 @@ class Music_transformer(tf.keras.Model):
         x = tf.concat((sounds, deltas), axis=-1)
 
         # evaluating process
-        if alpha != 0:
-            input_sound, input_delta = inputs
-            input_sound_embedded = self.emb_layer_sound(input_sound)
-            input_sound_embedded = sounds * tf.math.sqrt(tf.cast(self.d_sound, tf.float32))
-            input_delta_embedded = self.emb_layer_delta(input_delta)
-            input_delta_embedded = deltas * tf.math.sqrt(tf.cast(self.d_delta, tf.float32))
+        if alpha != 0.0:
             input_concat = tf.concat((input_sound_embedded, input_delta_embedded), axis=-1)
 
             split_index = int(x.shape[1] * alpha)
