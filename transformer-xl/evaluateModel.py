@@ -13,49 +13,6 @@ N_FILES = 1
 BATCHSIZE = 1
 FILENAME = '0.npz'
 
-
-# @tf.function
-def evaluate_model(inputs_sound, inputs_delta, labels_sound, labels_delta, alpha):
-
-    logits_sound, logits_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
-        inputs=(inputs_sound, inputs_delta),
-        mem_list=None,
-        next_mem_len=mem_len,
-        training=False,
-        alpha=alpha
-    )
-
-    if use_attn_reg:
-        attention_loss = 4 * tf.math.reduce_mean(attention_loss_list)
-    else:
-        attention_loss = None
-
-    loss, pad_mask = model.get_loss(
-        logits_sound=logits_sound,
-        logits_delta=logits_delta,
-        labels_sound=labels_sound,
-        labels_delta=labels_delta,
-        attention_loss=attention_loss
-    )
-
-    outputs_sound = tf.nn.softmax(logits_sound, axis=-1)
-    # outputs_sound -> (batch_size, seq_len, n_sounds)
-    outputs_delta = tf.nn.softmax(logits_delta, axis=-1)
-    # outputs_delta -> (batch_size, seq_len, n_deltas)
-
-    non_padded_labels_sound = tf.boolean_mask(labels_sound, pad_mask)
-    non_padded_outputs_sound = tf.boolean_mask(outputs_sound, pad_mask)
-
-    non_padded_labels_delta = tf.boolean_mask(labels_delta, pad_mask)
-    non_padded_outputs_delta = tf.boolean_mask(outputs_delta, pad_mask)
-
-    loss_metric(loss)
-    acc_metric_sound(non_padded_labels_sound, non_padded_outputs_sound)
-    acc_metric_delta(non_padded_labels_delta, non_padded_outputs_delta)
-
-    return next_mem_list
-
-
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
 
@@ -85,6 +42,7 @@ if __name__ == '__main__':
         n_samples=N_FILES, filename=FILENAME)
 
     model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=args.weights)
+    #model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=None)
 
     loss_metric = tf.keras.metrics.Mean(name='loss')
     acc_metric_sound = tf.keras.metrics.SparseCategoricalAccuracy(
@@ -94,6 +52,49 @@ if __name__ == '__main__':
 
     use_attn_reg = config.use_attn_reg
     values = []
+    @tf.function
+    def evaluate_model(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list, alpha):
+
+        with tf.GradientTape() as tape:
+
+            logits_sound, logits_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
+                inputs=(inputs_sound, inputs_delta),
+                mem_list=None,
+                next_mem_len=mem_len,
+                training=False,
+                alpha=alpha,
+            )
+
+            if use_attn_reg:
+                attention_loss = 4 * tf.math.reduce_mean(attention_loss_list)
+            else:
+                attention_loss = None
+
+            loss, pad_mask = model.get_loss(
+                logits_sound=logits_sound,
+                logits_delta=logits_delta,
+                labels_sound=labels_sound,
+                labels_delta=labels_delta,
+                attention_loss=attention_loss
+            )
+
+        outputs_sound = tf.nn.softmax(logits_sound, axis=-1)
+        # outputs_sound -> (batch_size, seq_len, n_sounds)
+        outputs_delta = tf.nn.softmax(logits_delta, axis=-1)
+        # outputs_delta -> (batch_size, seq_len, n_deltas)
+
+        non_padded_labels_sound = tf.boolean_mask(labels_sound, pad_mask)
+        non_padded_outputs_sound = tf.boolean_mask(outputs_sound, pad_mask)
+
+        non_padded_labels_delta = tf.boolean_mask(labels_delta, pad_mask)
+        non_padded_outputs_delta = tf.boolean_mask(outputs_delta, pad_mask)
+
+        loss_metric(loss)
+        acc_metric_sound(non_padded_labels_sound, non_padded_outputs_sound)
+        acc_metric_delta(non_padded_labels_delta, non_padded_outputs_delta)
+
+        return next_mem_list
+
     # evaluate model
 
     pad_idx = config.pad_idx
