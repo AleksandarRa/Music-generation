@@ -22,7 +22,6 @@ n_sounds = 2 * n_notes + n_cc + 1
 
 n_deltas = 66 + 1
 
-
 pad_idx = 0
 n_jobs = joblib.cpu_count()
 
@@ -32,11 +31,6 @@ d_combined = d_sound + d_delta
 
 n_heads_sound = 6
 n_heads_delta = 4
-n_heads_combined = n_heads_sound + n_heads_delta
-
-# For lstm layer
-n_units_sound = 6
-n_units_delta = 4
 n_heads_combined = n_heads_sound + n_heads_delta
 
 n_layers_sound = 3
