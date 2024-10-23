@@ -12,6 +12,8 @@
 *.xopp
 *.pk
 
+token_github.txt
+
 # LTSM_project
 LSTM_project/dataset/
 LSTM_project/deutschl/
