@@ -10,7 +10,7 @@ import dload
 if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('-m', '--midi_dir', type=str, default='maestro',
+    arg_parser.add_argument('-m', '--midi_dir', type=str, default='midis',
                             help='Directory where the midi files are stored')
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory where the npz files will be stored')
@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     args = arg_parser.parse_args()
     # to download the dataset
-    args.download = True
+    #args.download = True
     if args.download:
         if not pathlib.Path(args.midi_dir).exists():
             pathlib.Path(args.midi_dir).mkdir(parents=True, exist_ok=True)
