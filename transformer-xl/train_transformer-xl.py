@@ -1,7 +1,7 @@
 import csv
 
 from midi_parser import MIDI_parser
-from model import Music_transformer, LSTM_network
+from model import Music_transformer
 import config_music as config
 from utils import shuffle_ragged_2d, inputs_to_labels, get_quant_time
 import numpy as np
@@ -10,6 +10,7 @@ import argparse
 import os
 import pathlib
 
+EPOCHS = 140
 
 if __name__ == '__main__':
 
@@ -18,17 +19,17 @@ if __name__ == '__main__':
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory where the npz files are stored')
 
-    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music',
+    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music/transformerXL/',
                             help='Directory where the saved weights will be stored')
 
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
                             help='Number of epochs between saved checkpoints')
 
-    arg_parser.add_argument('-n', '--n_files', type=int, default=8,
+    arg_parser.add_argument('-n', '--n_files', type=int, default=None,
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
-                            default=None, help='Path to saved model weights')
+            default='checkpoints_music/transformerXL/transformerXL_checkpoint' + str(EPOCHS)+ '.weights.h5', help='Path to saved model weights')
 
     arg_parser.add_argument('-o', '--optimizer', type=str,
                             default=None, help='Path to saved optimizer weights')
@@ -44,8 +45,8 @@ if __name__ == '__main__':
     assert args.checkpoint_period > 0
     if not args.weights is None:
         assert pathlib.Path(args.weights).is_file()
-        assert not args.optimizer is None
-        assert pathlib.Path(args.optimizer).is_file()
+        #assert not args.optimizer is None
+        #assert pathlib.Path(args.optimizer).is_file()
 
     # ============================================================
     # ============================================================
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     assert batches_per_epoch > 0
     print(f'Created dataset with {batches_per_epoch} batches per epoch')
 
-    model, optimizer = LSTM_network.build_from_config(config=config, checkpoint_path=args.weights,
+    model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=args.weights,
                                                            optimizer_path=args.optimizer)
 
     loss_metric = tf.keras.metrics.Mean(name='loss')
@@ -74,22 +75,31 @@ if __name__ == '__main__':
     acc_metric_delta = tf.keras.metrics.SparseCategoricalAccuracy(
         name='acc_delta')
 
+    use_attn_reg = config.use_attn_reg
 
     @tf.function
-    def train_step(inputs_sound, inputs_delta, labels_sound, labels_delta):
+    def train_step(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list):
 
         with tf.GradientTape() as tape:
 
-            logits_sound, logits_delta = model(
+            logits_sound, logits_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
                 inputs=(inputs_sound, inputs_delta),
+                mem_list=mem_list,
+                next_mem_len=mem_len,
                 training=True
             )
+
+            if use_attn_reg:
+                attention_loss = 4 * tf.math.reduce_mean(attention_loss_list)
+            else:
+                attention_loss = None
 
             loss, pad_mask = model.get_loss(
                 logits_sound=logits_sound,
                 logits_delta=logits_delta,
                 labels_sound=labels_sound,
                 labels_delta=labels_delta,
+                attention_loss=attention_loss
             )
 
         gradients = tape.gradient(loss, model.trainable_variables)
@@ -110,6 +120,8 @@ if __name__ == '__main__':
         acc_metric_sound(non_padded_labels_sound, non_padded_outputs_sound)
         acc_metric_delta(non_padded_labels_delta, non_padded_outputs_delta)
 
+        return next_mem_list
+
     # =====================================================================================
     # =====================================================================================
     # =====================================================================================
@@ -121,14 +133,16 @@ if __name__ == '__main__':
     n_epochs = config.n_epochs
     pad_idx = config.pad_idx
     seq_len = config.seq_len
+    mem_len = config.mem_len
     max_segs_per_batch = config.max_segs_per_batch
+
+    acc_sound_values = []
+    acc_delta_values = []
+    loss_values = []
 
     for epoch in range(1, n_epochs + 1):
 
         print(f"\nEpoch {epoch}/{n_epochs}")
-
-        progress_bar = tf.keras.utils.Progbar(batches_per_epoch, stateful_metrics=[
-            'acc_sound', 'acc_delta', 'loss'])
 
         loss_metric.reset_state()
         acc_metric_sound.reset_state()
@@ -152,7 +166,9 @@ if __name__ == '__main__':
             # ======================================================================================
             # train on random slices of the batch
             # ======================================================================================
+
             segs_per_batch = min(max_segs_per_batch, maxlen // seq_len)
+            mem_list = None
             start = np.random.randint(
                 0, maxlen - (segs_per_batch) * seq_len + 1)
 
@@ -173,10 +189,11 @@ if __name__ == '__main__':
                 # ============================
                 # training takes place here
                 # ============================
-                train_step(inputs_sound=seg_sound,
+                mem_list = train_step(inputs_sound=seg_sound,
                                       inputs_delta=seg_delta,
                                       labels_sound=seg_labels_sound,
-                                      labels_delta=seg_labels_delta)
+                                      labels_delta=seg_labels_delta,
+                                      mem_list=mem_list)
 
                 start += seq_len
 
@@ -187,24 +204,21 @@ if __name__ == '__main__':
                       ('acc_delta', acc_metric_delta.result()),
                       ('loss', loss_metric.result())]
 
-            # Open the file in append mode and write the values
-            with open('logs/logs_LSTM.csv', mode='a', newline='') as file:
-                writer = csv.writer(file)
-                # Write the values as a row
-                #writer.writerow([name for name, result in values])  # Headers (Optional)
-                # Write the actual numeric values
-                writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
-
-            progress_bar.add(1, values=values)
+        # Open the file in append mode and write the values
+        with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            # Write the values as a row
+            # writer.writerow([name for name, result in values])  # Headers (Optional)
+            # Write the actual numeric values
+            writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
         if epoch % args.checkpoint_period == 0:
-
             checkpoint_path = os.path.join(
-                args.checkpoint_dir, f'checkpoint{epoch}.weights.h5')
+                args.checkpoint_dir, f'transformerXL/transformerXL_checkpoint{epoch+EPOCHS}.weights.h5')
             model.save_weights(checkpoint_path)
 
             optimizer_path = os.path.join(
-                args.checkpoint_dir, f'optimizer{epoch}.npy')
+                args.checkpoint_dir, f'transformerXL/transformerXL_optimizer{epoch}.npy')
             # np.save(optimizer_path, optimizer.get_weights())
 
             print(f'Saved model weights at {checkpoint_path}')

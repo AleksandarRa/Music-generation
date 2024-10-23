@@ -1,0 +1,871 @@
+1 : 1000.npz | [Errno 22] Invalid argument
+2 : 1026.npz | File is not a zip file
+3 : 1028.npz | File is not a zip file
+4 : 103.npz | File is not a zip file
+5 : 1035.npz | File is not a zip file
+6 : 1042.npz | [Errno 22] Invalid argument
+7 : 1056.npz | File is not a zip file
+8 : 1059.npz | File is not a zip file
+9 : 1062.npz | File is not a zip file
+10 : 1092.npz | File is not a zip file
+11 : 1093.npz | File is not a zip file
+12 : 1098.npz | [Errno 22] Invalid argument
+13 : 1104.npz | File is not a zip file
+14 : 1111.npz | File is not a zip file
+15 : 1117.npz | [Errno 22] Invalid argument
+16 : 112.npz | File is not a zip file
+17 : 1123.npz | File is not a zip file
+18 : 1124.npz | File is not a zip file
+19 : 1125.npz | File is not a zip file
+20 : 1139.npz | File is not a zip file
+21 : 1146.npz | File is not a zip file
+22 : 1152.npz | [Errno 22] Invalid argument
+23 : 1161.npz | File is not a zip file
+24 : 1170.npz | [Errno 22] Invalid argument
+25 : 1174.npz | File is not a zip file
+26 : 1182.npz | File is not a zip file
+27 : 1186.npz | File is not a zip file
+28 : 1217.npz | File is not a zip file
+29 : 1241.npz | File is not a zip file
+30 : 1253.npz | File is not a zip file
+31 : 1278.npz | File is not a zip file
+32 : 1281.npz | File is not a zip file
+33 : 1282.npz | File is not a zip file
+34 : 1298.npz | File is not a zip file
+35 : 1299.npz | File is not a zip file
+36 : 1307.npz | [Errno 22] Invalid argument
+37 : 1312.npz | File is not a zip file
+38 : 1313.npz | File is not a zip file
+39 : 1324.npz | [Errno 22] Invalid argument
+40 : 1326.npz | File is not a zip file
+41 : 1329.npz | File is not a zip file
+42 : 1333.npz | File is not a zip file
+43 : 1334.npz | File is not a zip file
+44 : 1340.npz | File is not a zip file
+45 : 1342.npz | File is not a zip file
+46 : 1354.npz | File is not a zip file
+47 : 1356.npz | [Errno 22] Invalid argument
+48 : 136.npz | File is not a zip file
+49 : 1361.npz | [Errno 22] Invalid argument
+50 : 1370.npz | File is not a zip file
+51 : 1376.npz | File is not a zip file
+52 : 1382.npz | File is not a zip file
+53 : 1392.npz | File is not a zip file
+54 : 1394.npz | [Errno 22] Invalid argument
+55 : 1398.npz | File is not a zip file
+56 : 14.npz | [Errno 22] Invalid argument
+57 : 1408.npz | File is not a zip file
+58 : 141.npz | File is not a zip file
+59 : 1414.npz | File is not a zip file
+60 : 1417.npz | File is not a zip file
+61 : 1422.npz | File is not a zip file
+62 : 1423.npz | File is not a zip file
+63 : 1440.npz | File is not a zip file
+64 : 1445.npz | File is not a zip file
+65 : 1453.npz | [Errno 22] Invalid argument
+66 : 1455.npz | File is not a zip file
+67 : 1463.npz | [Errno 22] Invalid argument
+68 : 1467.npz | File is not a zip file
+69 : 148.npz | [Errno 22] Invalid argument
+70 : 1480.npz | File is not a zip file
+71 : 1488.npz | File is not a zip file
+72 : 1493.npz | File is not a zip file
+73 : 1504.npz | File is not a zip file
+74 : 1507.npz | File is not a zip file
+75 : 151.npz | File is not a zip file
+76 : 1510.npz | File is not a zip file
+77 : 1511.npz | File is not a zip file
+78 : 1516.npz | File is not a zip file
+79 : 1526.npz | File is not a zip file
+80 : 1528.npz | File is not a zip file
+81 : 153.npz | [Errno 22] Invalid argument
+82 : 1553.npz | File is not a zip file
+83 : 1558.npz | File is not a zip file
+84 : 1560.npz | File is not a zip file
+85 : 1562.npz | File is not a zip file
+86 : 1574.npz | File is not a zip file
+87 : 1584.npz | File is not a zip file
+88 : 1591.npz | File is not a zip file
+89 : 1592.npz | File is not a zip file
+90 : 161.npz | File is not a zip file
+91 : 1618.npz | File is not a zip file
+92 : 1620.npz | File is not a zip file
+93 : 1622.npz | File is not a zip file
+94 : 1624.npz | File is not a zip file
+95 : 1631.npz | File is not a zip file
+96 : 1649.npz | File is not a zip file
+97 : 165.npz | [Errno 22] Invalid argument
+98 : 1676.npz | File is not a zip file
+99 : 1684.npz | File is not a zip file
+100 : 1689.npz | File is not a zip file
+101 : 1696.npz | File is not a zip file
+102 : 1712.npz | File is not a zip file
+103 : 1715.npz | [Errno 22] Invalid argument
+104 : 1723.npz | File is not a zip file
+105 : 1734.npz | [Errno 22] Invalid argument
+106 : 1746.npz | [Errno 22] Invalid argument
+107 : 1753.npz | File is not a zip file
+108 : 1756.npz | File is not a zip file
+109 : 1759.npz | [Errno 22] Invalid argument
+110 : 1760.npz | File is not a zip file
+111 : 1777.npz | File is not a zip file
+112 : 1794.npz | File is not a zip file
+113 : 18.npz | File is not a zip file
+114 : 1804.npz | File is not a zip file
+115 : 181.npz | File is not a zip file
+116 : 1814.npz | File is not a zip file
+117 : 1825.npz | File is not a zip file
+118 : 1826.npz | File is not a zip file
+119 : 1828.npz | [Errno 22] Invalid argument
+120 : 1831.npz | File is not a zip file
+121 : 1835.npz | File is not a zip file
+122 : 1846.npz | [Errno 22] Invalid argument
+123 : 1857.npz | File is not a zip file
+124 : 1860.npz | File is not a zip file
+125 : 1905.npz | File is not a zip file
+126 : 1911.npz | [Errno 22] Invalid argument
+127 : 1927.npz | [Errno 22] Invalid argument
+128 : 193.npz | File is not a zip file
+129 : 1933.npz | File is not a zip file
+130 : 1938.npz | File is not a zip file
+131 : 1943.npz | File is not a zip file
+132 : 1944.npz | File is not a zip file
+133 : 1953.npz | File is not a zip file
+134 : 1964.npz | File is not a zip file
+135 : 1969.npz | [Errno 22] Invalid argument
+136 : 1972.npz | File is not a zip file
+137 : 1977.npz | [Errno 22] Invalid argument
+138 : 1986.npz | File is not a zip file
+139 : 1988.npz | [Errno 22] Invalid argument
+140 : 1991.npz | [Errno 22] Invalid argument
+141 : 1996.npz | File is not a zip file
+142 : 1997.npz | File is not a zip file
+143 : 2004.npz | File is not a zip file
+144 : 2009.npz | File is not a zip file
+145 : 2015.npz | File is not a zip file
+146 : 202.npz | [Errno 22] Invalid argument
+147 : 2035.npz | File is not a zip file
+148 : 206.npz | File is not a zip file
+149 : 2067.npz | [Errno 22] Invalid argument
+150 : 2071.npz | File is not a zip file
+151 : 209.npz | File is not a zip file
+152 : 2134.npz | File is not a zip file
+153 : 2159.npz | File is not a zip file
+154 : 2171.npz | File is not a zip file
+155 : 219.npz | File is not a zip file
+156 : 2203.npz | File is not a zip file
+157 : 2212.npz | File is not a zip file
+158 : 2219.npz | File is not a zip file
+159 : 2221.npz | File is not a zip file
+160 : 2242.npz | [Errno 22] Invalid argument
+161 : 2260.npz | File is not a zip file
+162 : 227.npz | File is not a zip file
+163 : 2272.npz | [Errno 22] Invalid argument
+164 : 2275.npz | File is not a zip file
+165 : 2284.npz | File is not a zip file
+166 : 2285.npz | File is not a zip file
+167 : 2295.npz | File is not a zip file
+168 : 2297.npz | File is not a zip file
+169 : 2301.npz | File is not a zip file
+170 : 2304.npz | File is not a zip file
+171 : 2325.npz | File is not a zip file
+172 : 2361.npz | File is not a zip file
+173 : 2369.npz | File is not a zip file
+174 : 2374.npz | File is not a zip file
+175 : 2376.npz | File is not a zip file
+176 : 2380.npz | File is not a zip file
+177 : 2389.npz | File is not a zip file
+178 : 2391.npz | File is not a zip file
+179 : 24.npz | File is not a zip file
+180 : 2405.npz | File is not a zip file
+181 : 2419.npz | File is not a zip file
+182 : 2423.npz | File is not a zip file
+183 : 2435.npz | File is not a zip file
+184 : 245.npz | File is not a zip file
+185 : 2451.npz | File is not a zip file
+186 : 2457.npz | File is not a zip file
+187 : 2460.npz | [Errno 22] Invalid argument
+188 : 247.npz | File is not a zip file
+189 : 2470.npz | [Errno 22] Invalid argument
+190 : 2501.npz | File is not a zip file
+191 : 2521.npz | File is not a zip file
+192 : 2524.npz | [Errno 22] Invalid argument
+193 : 2530.npz | File is not a zip file
+194 : 2535.npz | File is not a zip file
+195 : 254.npz | File is not a zip file
+196 : 2551.npz | File is not a zip file
+197 : 2571.npz | File is not a zip file
+198 : 2576.npz | File is not a zip file
+199 : 2578.npz | File is not a zip file
+200 : 2584.npz | [Errno 22] Invalid argument
+201 : 2585.npz | File is not a zip file
+202 : 2598.npz | File is not a zip file
+203 : 2599.npz | File is not a zip file
+204 : 26.npz | File is not a zip file
+205 : 2610.npz | File is not a zip file
+206 : 2622.npz | File is not a zip file
+207 : 2627.npz | File is not a zip file
+208 : 2629.npz | [Errno 22] Invalid argument
+209 : 2631.npz | File is not a zip file
+210 : 2635.npz | File is not a zip file
+211 : 2639.npz | File is not a zip file
+212 : 2640.npz | File is not a zip file
+213 : 2642.npz | File is not a zip file
+214 : 2644.npz | File is not a zip file
+215 : 2646.npz | File is not a zip file
+216 : 2654.npz | File is not a zip file
+217 : 2657.npz | File is not a zip file
+218 : 266.npz | File is not a zip file
+219 : 2663.npz | File is not a zip file
+220 : 2667.npz | File is not a zip file
+221 : 2669.npz | File is not a zip file
+222 : 2686.npz | File is not a zip file
+223 : 2689.npz | File is not a zip file
+224 : 2692.npz | File is not a zip file
+225 : 27.npz | File is not a zip file
+226 : 2701.npz | [Errno 22] Invalid argument
+227 : 2718.npz | File is not a zip file
+228 : 2727.npz | File is not a zip file
+229 : 2741.npz | File is not a zip file
+230 : 2753.npz | [Errno 22] Invalid argument
+231 : 2754.npz | File is not a zip file
+232 : 2760.npz | File is not a zip file
+233 : 2768.npz | File is not a zip file
+234 : 2792.npz | File is not a zip file
+235 : 2803.npz | File is not a zip file
+236 : 2808.npz | File is not a zip file
+237 : 282.npz | File is not a zip file
+238 : 2824.npz | File is not a zip file
+239 : 2844.npz | File is not a zip file
+240 : 2849.npz | File is not a zip file
+241 : 2854.npz | File is not a zip file
+242 : 2859.npz | File is not a zip file
+243 : 2878.npz | File is not a zip file
+244 : 2880.npz | [Errno 22] Invalid argument
+245 : 2883.npz | File is not a zip file
+246 : 2884.npz | File is not a zip file
+247 : 2888.npz | File is not a zip file
+248 : 289.npz | File is not a zip file
+249 : 2894.npz | File is not a zip file
+250 : 2896.npz | File is not a zip file
+251 : 2913.npz | File is not a zip file
+252 : 2951.npz | File is not a zip file
+253 : 2952.npz | [Errno 22] Invalid argument
+254 : 2963.npz | File is not a zip file
+255 : 2974.npz | File is not a zip file
+256 : 2976.npz | File is not a zip file
+257 : 2977.npz | File is not a zip file
+258 : 2988.npz | [Errno 22] Invalid argument
+259 : 2992.npz | File is not a zip file
+260 : 2996.npz | File is not a zip file
+261 : 2999.npz | File is not a zip file
+262 : 3006.npz | File is not a zip file
+263 : 3010.npz | File is not a zip file
+264 : 3011.npz | [Errno 22] Invalid argument
+265 : 3013.npz | File is not a zip file
+266 : 3014.npz | File is not a zip file
+267 : 3019.npz | File is not a zip file
+268 : 3028.npz | File is not a zip file
+269 : 3029.npz | File is not a zip file
+270 : 3031.npz | File is not a zip file
+271 : 3033.npz | [Errno 22] Invalid argument
+272 : 3034.npz | File is not a zip file
+273 : 3039.npz | File is not a zip file
+274 : 305.npz | File is not a zip file
+275 : 3056.npz | File is not a zip file
+276 : 3058.npz | File is not a zip file
+277 : 3060.npz | File is not a zip file
+278 : 3067.npz | File is not a zip file
+279 : 3072.npz | [Errno 22] Invalid argument
+280 : 3076.npz | File is not a zip file
+281 : 3085.npz | File is not a zip file
+282 : 3091.npz | File is not a zip file
+283 : 3092.npz | [Errno 22] Invalid argument
+284 : 3093.npz | File is not a zip file
+285 : 3096.npz | [Errno 22] Invalid argument
+286 : 3100.npz | [Errno 22] Invalid argument
+287 : 3104.npz | [Errno 22] Invalid argument
+288 : 311.npz | File is not a zip file
+289 : 3123.npz | File is not a zip file
+290 : 3126.npz | [Errno 22] Invalid argument
+291 : 3149.npz | File is not a zip file
+292 : 3153.npz | File is not a zip file
+293 : 3171.npz | File is not a zip file
+294 : 3173.npz | [Errno 22] Invalid argument
+295 : 3175.npz | File is not a zip file
+296 : 3178.npz | File is not a zip file
+297 : 3196.npz | File is not a zip file
+298 : 3200.npz | [Errno 22] Invalid argument
+299 : 3210.npz | File is not a zip file
+300 : 3213.npz | File is not a zip file
+301 : 3218.npz | File is not a zip file
+302 : 3219.npz | File is not a zip file
+303 : 3229.npz | File is not a zip file
+304 : 3234.npz | File is not a zip file
+305 : 3239.npz | File is not a zip file
+306 : 3241.npz | [Errno 22] Invalid argument
+307 : 3250.npz | File is not a zip file
+308 : 3251.npz | File is not a zip file
+309 : 3270.npz | File is not a zip file
+310 : 3274.npz | File is not a zip file
+311 : 3284.npz | File is not a zip file
+312 : 3294.npz | File is not a zip file
+313 : 3308.npz | File is not a zip file
+314 : 3311.npz | [Errno 22] Invalid argument
+315 : 3316.npz | File is not a zip file
+316 : 3319.npz | File is not a zip file
+317 : 3327.npz | File is not a zip file
+318 : 3328.npz | [Errno 22] Invalid argument
+319 : 334.npz | File is not a zip file
+320 : 3350.npz | File is not a zip file
+321 : 3351.npz | File is not a zip file
+322 : 3356.npz | File is not a zip file
+323 : 3357.npz | File is not a zip file
+324 : 3376.npz | File is not a zip file
+325 : 3378.npz | [Errno 22] Invalid argument
+326 : 3388.npz | File is not a zip file
+327 : 3408.npz | File is not a zip file
+328 : 3418.npz | File is not a zip file
+329 : 3424.npz | [Errno 22] Invalid argument
+330 : 3431.npz | File is not a zip file
+331 : 3432.npz | [Errno 22] Invalid argument
+332 : 3434.npz | File is not a zip file
+333 : 3438.npz | File is not a zip file
+334 : 3450.npz | [Errno 22] Invalid argument
+335 : 3451.npz | File is not a zip file
+336 : 3453.npz | File is not a zip file
+337 : 3456.npz | [Errno 22] Invalid argument
+338 : 3475.npz | File is not a zip file
+339 : 3476.npz | [Errno 22] Invalid argument
+340 : 3479.npz | File is not a zip file
+341 : 3481.npz | File is not a zip file
+342 : 3482.npz | File is not a zip file
+343 : 349.npz | File is not a zip file
+344 : 3494.npz | [Errno 22] Invalid argument
+345 : 3506.npz | File is not a zip file
+346 : 3507.npz | [Errno 22] Invalid argument
+347 : 3513.npz | [Errno 22] Invalid argument
+348 : 3514.npz | [Errno 22] Invalid argument
+349 : 3516.npz | File is not a zip file
+350 : 3526.npz | File is not a zip file
+351 : 356.npz | [Errno 22] Invalid argument
+352 : 3571.npz | File is not a zip file
+353 : 3572.npz | File is not a zip file
+354 : 3578.npz | File is not a zip file
+355 : 3601.npz | File is not a zip file
+356 : 3624.npz | File is not a zip file
+357 : 3625.npz | File is not a zip file
+358 : 3627.npz | File is not a zip file
+359 : 3632.npz | [Errno 22] Invalid argument
+360 : 3638.npz | File is not a zip file
+361 : 3639.npz | File is not a zip file
+362 : 3652.npz | File is not a zip file
+363 : 3654.npz | File is not a zip file
+364 : 3660.npz | File is not a zip file
+365 : 3663.npz | File is not a zip file
+366 : 3671.npz | [Errno 22] Invalid argument
+367 : 3672.npz | File is not a zip file
+368 : 3685.npz | File is not a zip file
+369 : 3692.npz | File is not a zip file
+370 : 3707.npz | File is not a zip file
+371 : 3708.npz | File is not a zip file
+372 : 3719.npz | File is not a zip file
+373 : 3725.npz | File is not a zip file
+374 : 3726.npz | File is not a zip file
+375 : 3727.npz | [Errno 22] Invalid argument
+376 : 3729.npz | File is not a zip file
+377 : 3734.npz | [Errno 22] Invalid argument
+378 : 3748.npz | File is not a zip file
+379 : 3753.npz | File is not a zip file
+380 : 3756.npz | File is not a zip file
+381 : 3772.npz | File is not a zip file
+382 : 3780.npz | [Errno 22] Invalid argument
+383 : 3789.npz | [Errno 22] Invalid argument
+384 : 3824.npz | File is not a zip file
+385 : 3826.npz | File is not a zip file
+386 : 3827.npz | File is not a zip file
+387 : 3845.npz | File is not a zip file
+388 : 3862.npz | File is not a zip file
+389 : 3866.npz | File is not a zip file
+390 : 3883.npz | File is not a zip file
+391 : 389.npz | [Errno 22] Invalid argument
+392 : 3894.npz | File is not a zip file
+393 : 390.npz | File is not a zip file
+394 : 3908.npz | File is not a zip file
+395 : 3919.npz | File is not a zip file
+396 : 3931.npz | File is not a zip file
+397 : 3933.npz | File is not a zip file
+398 : 3935.npz | File is not a zip file
+399 : 3937.npz | File is not a zip file
+400 : 3943.npz | File is not a zip file
+401 : 395.npz | File is not a zip file
+402 : 3950.npz | File is not a zip file
+403 : 3958.npz | File is not a zip file
+404 : 3959.npz | File is not a zip file
+405 : 396.npz | File is not a zip file
+406 : 3960.npz | File is not a zip file
+407 : 3962.npz | File is not a zip file
+408 : 3966.npz | File is not a zip file
+409 : 3975.npz | File is not a zip file
+410 : 398.npz | File is not a zip file
+411 : 3994.npz | File is not a zip file
+412 : 3995.npz | File is not a zip file
+413 : 4006.npz | File is not a zip file
+414 : 4021.npz | [Errno 22] Invalid argument
+415 : 4035.npz | File is not a zip file
+416 : 4057.npz | File is not a zip file
+417 : 4060.npz | File is not a zip file
+418 : 4067.npz | File is not a zip file
+419 : 4072.npz | File is not a zip file
+420 : 4084.npz | File is not a zip file
+421 : 409.npz | File is not a zip file
+422 : 4091.npz | [Errno 22] Invalid argument
+423 : 410.npz | File is not a zip file
+424 : 4104.npz | File is not a zip file
+425 : 4110.npz | File is not a zip file
+426 : 4116.npz | File is not a zip file
+427 : 4120.npz | File is not a zip file
+428 : 4135.npz | File is not a zip file
+429 : 4137.npz | File is not a zip file
+430 : 4139.npz | [Errno 22] Invalid argument
+431 : 4143.npz | [Errno 22] Invalid argument
+432 : 4145.npz | File is not a zip file
+433 : 4165.npz | [Errno 22] Invalid argument
+434 : 4177.npz | File is not a zip file
+435 : 418.npz | [Errno 22] Invalid argument
+436 : 4185.npz | File is not a zip file
+437 : 4193.npz | File is not a zip file
+438 : 4197.npz | [Errno 22] Invalid argument
+439 : 420.npz | File is not a zip file
+440 : 4229.npz | File is not a zip file
+441 : 4232.npz | File is not a zip file
+442 : 4238.npz | File is not a zip file
+443 : 4255.npz | [Errno 22] Invalid argument
+444 : 4256.npz | File is not a zip file
+445 : 4263.npz | [Errno 22] Invalid argument
+446 : 427.npz | File is not a zip file
+447 : 4274.npz | File is not a zip file
+448 : 4275.npz | File is not a zip file
+449 : 4300.npz | [Errno 22] Invalid argument
+450 : 4306.npz | File is not a zip file
+451 : 4308.npz | File is not a zip file
+452 : 4312.npz | File is not a zip file
+453 : 4317.npz | [Errno 22] Invalid argument
+454 : 4321.npz | File is not a zip file
+455 : 4323.npz | [Errno 22] Invalid argument
+456 : 4334.npz | File is not a zip file
+457 : 4335.npz | File is not a zip file
+458 : 4339.npz | File is not a zip file
+459 : 4354.npz | File is not a zip file
+460 : 4357.npz | File is not a zip file
+461 : 4362.npz | File is not a zip file
+462 : 4367.npz | Bad magic number for central directory
+463 : 4369.npz | [Errno 22] Invalid argument
+464 : 4380.npz | File is not a zip file
+465 : 439.npz | File is not a zip file
+466 : 4403.npz | File is not a zip file
+467 : 4407.npz | File is not a zip file
+468 : 4409.npz | [Errno 22] Invalid argument
+469 : 4413.npz | File is not a zip file
+470 : 4416.npz | File is not a zip file
+471 : 4417.npz | File is not a zip file
+472 : 4423.npz | [Errno 22] Invalid argument
+473 : 4426.npz | File is not a zip file
+474 : 4428.npz | File is not a zip file
+475 : 4430.npz | [Errno 22] Invalid argument
+476 : 4434.npz | File is not a zip file
+477 : 4441.npz | File is not a zip file
+478 : 4470.npz | File is not a zip file
+479 : 4494.npz | [Errno 22] Invalid argument
+480 : 4499.npz | [Errno 22] Invalid argument
+481 : 4502.npz | File is not a zip file
+482 : 4514.npz | [Errno 22] Invalid argument
+483 : 4518.npz | File is not a zip file
+484 : 4529.npz | File is not a zip file
+485 : 4556.npz | File is not a zip file
+486 : 4557.npz | File is not a zip file
+487 : 4565.npz | [Errno 22] Invalid argument
+488 : 4595.npz | File is not a zip file
+489 : 460.npz | File is not a zip file
+490 : 4602.npz | File is not a zip file
+491 : 4616.npz | File is not a zip file
+492 : 4618.npz | File is not a zip file
+493 : 462.npz | File is not a zip file
+494 : 4621.npz | File is not a zip file
+495 : 4633.npz | [Errno 22] Invalid argument
+496 : 4638.npz | File is not a zip file
+497 : 4644.npz | File is not a zip file
+498 : 4652.npz | File is not a zip file
+499 : 4654.npz | File is not a zip file
+500 : 4677.npz | File is not a zip file
+501 : 468.npz | File is not a zip file
+502 : 4685.npz | File is not a zip file
+503 : 469.npz | [Errno 22] Invalid argument
+504 : 4696.npz | File is not a zip file
+505 : 470.npz | File is not a zip file
+506 : 4705.npz | File is not a zip file
+507 : 4709.npz | File is not a zip file
+508 : 4728.npz | File is not a zip file
+509 : 4731.npz | File is not a zip file
+510 : 4732.npz | File is not a zip file
+511 : 4744.npz | File is not a zip file
+512 : 4749.npz | [Errno 22] Invalid argument
+513 : 4750.npz | File is not a zip file
+514 : 4764.npz | [Errno 22] Invalid argument
+515 : 4770.npz | File is not a zip file
+516 : 4778.npz | File is not a zip file
+517 : 478.npz | [Errno 22] Invalid argument
+518 : 4785.npz | File is not a zip file
+519 : 4813.npz | [Errno 22] Invalid argument
+520 : 4842.npz | File is not a zip file
+521 : 4847.npz | [Errno 22] Invalid argument
+522 : 4865.npz | File is not a zip file
+523 : 4869.npz | [Errno 22] Invalid argument
+524 : 4870.npz | File is not a zip file
+525 : 4872.npz | File is not a zip file
+526 : 4874.npz | [Errno 22] Invalid argument
+527 : 488.npz | File is not a zip file
+528 : 4899.npz | File is not a zip file
+529 : 4907.npz | File is not a zip file
+530 : 4909.npz | File is not a zip file
+531 : 4916.npz | File is not a zip file
+532 : 4917.npz | File is not a zip file
+533 : 4925.npz | [Errno 22] Invalid argument
+534 : 4927.npz | File is not a zip file
+535 : 4932.npz | File is not a zip file
+536 : 4941.npz | [Errno 22] Invalid argument
+537 : 4950.npz | [Errno 22] Invalid argument
+538 : 4964.npz | File is not a zip file
+539 : 4981.npz | File is not a zip file
+540 : 4988.npz | [Errno 22] Invalid argument
+541 : 4992.npz | File is not a zip file
+542 : 5009.npz | File is not a zip file
+543 : 5018.npz | File is not a zip file
+544 : 5025.npz | [Errno 22] Invalid argument
+545 : 5035.npz | File is not a zip file
+546 : 5048.npz | File is not a zip file
+547 : 5049.npz | File is not a zip file
+548 : 5052.npz | File is not a zip file
+549 : 5061.npz | [Errno 22] Invalid argument
+550 : 5064.npz | File is not a zip file
+551 : 5070.npz | File is not a zip file
+552 : 5072.npz | [Errno 22] Invalid argument
+553 : 5077.npz | [Errno 22] Invalid argument
+554 : 5106.npz | File is not a zip file
+555 : 5108.npz | File is not a zip file
+556 : 5110.npz | [Errno 22] Invalid argument
+557 : 5112.npz | [Errno 22] Invalid argument
+558 : 512.npz | [Errno 22] Invalid argument
+559 : 5139.npz | File is not a zip file
+560 : 5142.npz | File is not a zip file
+561 : 5147.npz | File is not a zip file
+562 : 515.npz | File is not a zip file
+563 : 5157.npz | File is not a zip file
+564 : 5161.npz | File is not a zip file
+565 : 5180.npz | [Errno 22] Invalid argument
+566 : 5189.npz | [Errno 22] Invalid argument
+567 : 5190.npz | File is not a zip file
+568 : 5207.npz | File is not a zip file
+569 : 5211.npz | [Errno 22] Invalid argument
+570 : 5217.npz | File is not a zip file
+571 : 5222.npz | File is not a zip file
+572 : 5227.npz | File is not a zip file
+573 : 5233.npz | File is not a zip file
+574 : 5236.npz | File is not a zip file
+575 : 5237.npz | File is not a zip file
+576 : 5242.npz | File is not a zip file
+577 : 5250.npz | File is not a zip file
+578 : 5251.npz | File is not a zip file
+579 : 5261.npz | File is not a zip file
+580 : 5269.npz | File is not a zip file
+581 : 5281.npz | File is not a zip file
+582 : 5286.npz | [Errno 22] Invalid argument
+583 : 5292.npz | File is not a zip file
+584 : 5302.npz | File is not a zip file
+585 : 5306.npz | File is not a zip file
+586 : 5316.npz | [Errno 22] Invalid argument
+587 : 5335.npz | File is not a zip file
+588 : 5338.npz | [Errno 22] Invalid argument
+589 : 5354.npz | File is not a zip file
+590 : 5361.npz | File is not a zip file
+591 : 5362.npz | File is not a zip file
+592 : 5364.npz | File is not a zip file
+593 : 5371.npz | File is not a zip file
+594 : 5373.npz | [Errno 22] Invalid argument
+595 : 5384.npz | File is not a zip file
+596 : 5386.npz | File is not a zip file
+597 : 5396.npz | [Errno 22] Invalid argument
+598 : 5403.npz | [Errno 22] Invalid argument
+599 : 5405.npz | File is not a zip file
+600 : 5406.npz | [Errno 22] Invalid argument
+601 : 5407.npz | [Errno 22] Invalid argument
+602 : 5427.npz | [Errno 22] Invalid argument
+603 : 5429.npz | File is not a zip file
+604 : 5436.npz | [Errno 22] Invalid argument
+605 : 5437.npz | File is not a zip file
+606 : 5439.npz | File is not a zip file
+607 : 5458.npz | File is not a zip file
+608 : 5461.npz | File is not a zip file
+609 : 5468.npz | File is not a zip file
+610 : 5469.npz | [Errno 22] Invalid argument
+611 : 5476.npz | File is not a zip file
+612 : 5481.npz | File is not a zip file
+613 : 5482.npz | File is not a zip file
+614 : 5490.npz | [Errno 22] Invalid argument
+615 : 550.npz | File is not a zip file
+616 : 5530.npz | File is not a zip file
+617 : 5536.npz | File is not a zip file
+618 : 554.npz | File is not a zip file
+619 : 5549.npz | [Errno 22] Invalid argument
+620 : 5553.npz | File is not a zip file
+621 : 5559.npz | File is not a zip file
+622 : 5561.npz | File is not a zip file
+623 : 5565.npz | [Errno 22] Invalid argument
+624 : 5566.npz | File is not a zip file
+625 : 5570.npz | File is not a zip file
+626 : 5576.npz | File is not a zip file
+627 : 5577.npz | File is not a zip file
+628 : 558.npz | File is not a zip file
+629 : 5613.npz | File is not a zip file
+630 : 5616.npz | File is not a zip file
+631 : 5617.npz | File is not a zip file
+632 : 563.npz | File is not a zip file
+633 : 5638.npz | File is not a zip file
+634 : 5646.npz | File is not a zip file
+635 : 5648.npz | File is not a zip file
+636 : 5662.npz | File is not a zip file
+637 : 5672.npz | File is not a zip file
+638 : 568.npz | [Errno 22] Invalid argument
+639 : 569.npz | [Errno 22] Invalid argument
+640 : 5690.npz | File is not a zip file
+641 : 5693.npz | File is not a zip file
+642 : 571.npz | File is not a zip file
+643 : 5725.npz | File is not a zip file
+644 : 5729.npz | [Errno 22] Invalid argument
+645 : 573.npz | File is not a zip file
+646 : 5744.npz | [Errno 22] Invalid argument
+647 : 576.npz | File is not a zip file
+648 : 5763.npz | File is not a zip file
+649 : 5765.npz | [Errno 22] Invalid argument
+650 : 5784.npz | [Errno 22] Invalid argument
+651 : 5790.npz | File is not a zip file
+652 : 5796.npz | File is not a zip file
+653 : 5813.npz | File is not a zip file
+654 : 5816.npz | [Errno 22] Invalid argument
+655 : 5819.npz | [Errno 22] Invalid argument
+656 : 5829.npz | File is not a zip file
+657 : 5838.npz | File is not a zip file
+658 : 5839.npz | File is not a zip file
+659 : 5854.npz | File is not a zip file
+660 : 5857.npz | File is not a zip file
+661 : 5863.npz | File is not a zip file
+662 : 588.npz | File is not a zip file
+663 : 5886.npz | File is not a zip file
+664 : 5895.npz | [Errno 22] Invalid argument
+665 : 5899.npz | [Errno 22] Invalid argument
+666 : 5901.npz | File is not a zip file
+667 : 5917.npz | File is not a zip file
+668 : 5918.npz | File is not a zip file
+669 : 592.npz | [Errno 22] Invalid argument
+670 : 5926.npz | File is not a zip file
+671 : 5927.npz | File is not a zip file
+672 : 5946.npz | File is not a zip file
+673 : 5966.npz | File is not a zip file
+674 : 597.npz | [Errno 22] Invalid argument
+675 : 5973.npz | File is not a zip file
+676 : 5977.npz | File is not a zip file
+677 : 598.npz | File is not a zip file
+678 : 5984.npz | File is not a zip file
+679 : 5998.npz | [Errno 22] Invalid argument
+680 : 5999.npz | File is not a zip file
+681 : 6.npz | File is not a zip file
+682 : 6006.npz | File is not a zip file
+683 : 6007.npz | File is not a zip file
+684 : 6023.npz | [Errno 22] Invalid argument
+685 : 6033.npz | [Errno 22] Invalid argument
+686 : 6055.npz | File is not a zip file
+687 : 6060.npz | File is not a zip file
+688 : 6061.npz | File is not a zip file
+689 : 6063.npz | File is not a zip file
+690 : 6073.npz | File is not a zip file
+691 : 6074.npz | File is not a zip file
+692 : 6076.npz | File is not a zip file
+693 : 6077.npz | File is not a zip file
+694 : 6091.npz | File is not a zip file
+695 : 6104.npz | [Errno 22] Invalid argument
+696 : 6114.npz | [Errno 22] Invalid argument
+697 : 6118.npz | File is not a zip file
+698 : 6123.npz | File is not a zip file
+699 : 6138.npz | File is not a zip file
+700 : 6143.npz | File is not a zip file
+701 : 6155.npz | File is not a zip file
+702 : 6175.npz | File is not a zip file
+703 : 6186.npz | File is not a zip file
+704 : 6197.npz | [Errno 22] Invalid argument
+705 : 6201.npz | [Errno 22] Invalid argument
+706 : 6208.npz | [Errno 22] Invalid argument
+707 : 6213.npz | [Errno 22] Invalid argument
+708 : 6233.npz | [Errno 22] Invalid argument
+709 : 6234.npz | File is not a zip file
+710 : 624.npz | [Errno 22] Invalid argument
+711 : 6240.npz | File is not a zip file
+712 : 6241.npz | File is not a zip file
+713 : 6244.npz | [Errno 22] Invalid argument
+714 : 6249.npz | File is not a zip file
+715 : 6258.npz | File is not a zip file
+716 : 6276.npz | File is not a zip file
+717 : 6280.npz | File is not a zip file
+718 : 6284.npz | [Errno 22] Invalid argument
+719 : 6297.npz | File is not a zip file
+720 : 6301.npz | File is not a zip file
+721 : 6307.npz | File is not a zip file
+722 : 6308.npz | File is not a zip file
+723 : 632.npz | File is not a zip file
+724 : 6326.npz | [Errno 22] Invalid argument
+725 : 6333.npz | File is not a zip file
+726 : 6339.npz | File is not a zip file
+727 : 6348.npz | File is not a zip file
+728 : 6351.npz | File is not a zip file
+729 : 6357.npz | File is not a zip file
+730 : 6361.npz | File is not a zip file
+731 : 6372.npz | [Errno 22] Invalid argument
+732 : 6379.npz | File is not a zip file
+733 : 6386.npz | [Errno 22] Invalid argument
+734 : 6409.npz | File is not a zip file
+735 : 6418.npz | [Errno 22] Invalid argument
+736 : 6428.npz | File is not a zip file
+737 : 6438.npz | File is not a zip file
+738 : 6458.npz | File is not a zip file
+739 : 6461.npz | File is not a zip file
+740 : 6466.npz | [Errno 22] Invalid argument
+741 : 6485.npz | File is not a zip file
+742 : 6487.npz | File is not a zip file
+743 : 6496.npz | File is not a zip file
+744 : 6505.npz | File is not a zip file
+745 : 6510.npz | File is not a zip file
+746 : 6515.npz | File is not a zip file
+747 : 655.npz | File is not a zip file
+748 : 6550.npz | File is not a zip file
+749 : 6553.npz | [Errno 22] Invalid argument
+750 : 6555.npz | File is not a zip file
+751 : 6573.npz | File is not a zip file
+752 : 658.npz | File is not a zip file
+753 : 6581.npz | [Errno 22] Invalid argument
+754 : 6587.npz | File is not a zip file
+755 : 6591.npz | File is not a zip file
+756 : 6595.npz | File is not a zip file
+757 : 6616.npz | File is not a zip file
+758 : 6630.npz | File is not a zip file
+759 : 6646.npz | File is not a zip file
+760 : 6648.npz | [Errno 22] Invalid argument
+761 : 667.npz | File is not a zip file
+762 : 6679.npz | File is not a zip file
+763 : 6687.npz | File is not a zip file
+764 : 6691.npz | [Errno 22] Invalid argument
+765 : 6693.npz | File is not a zip file
+766 : 6705.npz | File is not a zip file
+767 : 6709.npz | [Errno 22] Invalid argument
+768 : 6712.npz | File is not a zip file
+769 : 6714.npz | File is not a zip file
+770 : 6717.npz | File is not a zip file
+771 : 6727.npz | File is not a zip file
+772 : 6746.npz | File is not a zip file
+773 : 675.npz | [Errno 22] Invalid argument
+774 : 6760.npz | File is not a zip file
+775 : 6769.npz | File is not a zip file
+776 : 6776.npz | [Errno 22] Invalid argument
+777 : 6783.npz | File is not a zip file
+778 : 6788.npz | File is not a zip file
+779 : 6789.npz | [Errno 22] Invalid argument
+780 : 6791.npz | [Errno 22] Invalid argument
+781 : 6800.npz | File is not a zip file
+782 : 6802.npz | [Errno 22] Invalid argument
+783 : 6805.npz | File is not a zip file
+784 : 6819.npz | File is not a zip file
+785 : 682.npz | File is not a zip file
+786 : 6821.npz | File is not a zip file
+787 : 6822.npz | File is not a zip file
+788 : 6829.npz | File is not a zip file
+789 : 6830.npz | File is not a zip file
+790 : 6833.npz | File is not a zip file
+791 : 6840.npz | File is not a zip file
+792 : 6841.npz | [Errno 22] Invalid argument
+793 : 6849.npz | File is not a zip file
+794 : 6852.npz | File is not a zip file
+795 : 6853.npz | File is not a zip file
+796 : 686.npz | File is not a zip file
+797 : 6861.npz | File is not a zip file
+798 : 6871.npz | [Errno 22] Invalid argument
+799 : 6877.npz | File is not a zip file
+800 : 6885.npz | [Errno 22] Invalid argument
+801 : 6899.npz | File is not a zip file
+802 : 6908.npz | File is not a zip file
+803 : 6928.npz | File is not a zip file
+804 : 6938.npz | File is not a zip file
+805 : 6942.npz | File is not a zip file
+806 : 6981.npz | File is not a zip file
+807 : 6982.npz | File is not a zip file
+808 : 6994.npz | File is not a zip file
+809 : 6996.npz | [Errno 22] Invalid argument
+810 : 7001.npz | File is not a zip file
+811 : 7011.npz | File is not a zip file
+812 : 702.npz | [Errno 22] Invalid argument
+813 : 7035.npz | File is not a zip file
+814 : 7044.npz | File is not a zip file
+815 : 7047.npz | File is not a zip file
+816 : 7053.npz | [Errno 22] Invalid argument
+817 : 7060.npz | [Errno 22] Invalid argument
+818 : 7075.npz | [Errno 22] Invalid argument
+819 : 7076.npz | [Errno 22] Invalid argument
+820 : 7083.npz | File is not a zip file
+821 : 7087.npz | File is not a zip file
+822 : 7089.npz | File is not a zip file
+823 : 7100.npz | File is not a zip file
+824 : 714.npz | [Errno 22] Invalid argument
+825 : 725.npz | File is not a zip file
+826 : 735.npz | File is not a zip file
+827 : 738.npz | File is not a zip file
+828 : 74.npz | [Errno 22] Invalid argument
+829 : 749.npz | [Errno 22] Invalid argument
+830 : 750.npz | File is not a zip file
+831 : 751.npz | File is not a zip file
+832 : 753.npz | File is not a zip file
+833 : 754.npz | File is not a zip file
+834 : 761.npz | File is not a zip file
+835 : 767.npz | File is not a zip file
+836 : 77.npz | [Errno 22] Invalid argument
+837 : 776.npz | File is not a zip file
+838 : 785.npz | File is not a zip file
+839 : 791.npz | File is not a zip file
+840 : 809.npz | [Errno 22] Invalid argument
+841 : 818.npz | [Errno 22] Invalid argument
+842 : 823.npz | File is not a zip file
+843 : 824.npz | File is not a zip file
+844 : 833.npz | [Errno 22] Invalid argument
+845 : 839.npz | File is not a zip file
+846 : 846.npz | File is not a zip file
+847 : 85.npz | File is not a zip file
+848 : 850.npz | [Errno 22] Invalid argument
+849 : 851.npz | File is not a zip file
+850 : 879.npz | [Errno 22] Invalid argument
+851 : 884.npz | File is not a zip file
+852 : 888.npz | File is not a zip file
+853 : 891.npz | File is not a zip file
+854 : 894.npz | File is not a zip file
+855 : 896.npz | [Errno 22] Invalid argument
+856 : 905.npz | [Errno 22] Invalid argument
+857 : 910.npz | [Errno 22] Invalid argument
+858 : 911.npz | File is not a zip file
+859 : 915.npz | File is not a zip file
+860 : 921.npz | File is not a zip file
+861 : 950.npz | [Errno 22] Invalid argument
+862 : 952.npz | File is not a zip file
+863 : 968.npz | File is not a zip file
+864 : 974.npz | File is not a zip file
+865 : 976.npz | [Errno 22] Invalid argument
+866 : 98.npz | [Errno 22] Invalid argument
+867 : 983.npz | File is not a zip file
+868 : 989.npz | File is not a zip file
+869 : 995.npz | File is not a zip file
+870 : 996.npz | [Errno 22] Invalid argument
+871 : 998.npz | File is not a zip file

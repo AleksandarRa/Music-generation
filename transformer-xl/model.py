@@ -294,22 +294,14 @@ class LSTM_layer(tf.keras.layers.Layer):
         self.lstm = tf.keras.layers.LSTM(n_units, return_sequences=True)
         self.dropout1 = tf.keras.layers.Dropout(dropout_rate)
 
-    def call(self, inputs, mem, mask, rel_enc, training):
+    def call(self, inputs, training):
 
         # inputs -> (batch_size, seq_len, d_model)
         # mem -> None or (batch_size, mem_len, d_model)
 
         seq_len = inputs.shape[1]
 
-        if mem is None:
-            x_tilde = inputs
-        else:
-            x_tilde = tf.concat((tf.stop_gradient(mem), inputs), axis=1)
-        # x_tilde -> (batch_size, full_len, d_model)
-
-        x_tilde = self.layer_norm1(x_tilde)
-
-        lstm_output = self.lstm(x_tilde)
+        lstm_output = self.lstm(inputs)
         output = self.dropout1(lstm_output, training=training)
         # lstm_output -> (batch_size, seq_len, d_model)
 
@@ -365,21 +357,21 @@ class LSTM_network(tf.keras.Model):
         for _ in range(self.n_layers_sound):
 
             layer = LSTM_layer(
-                self.d_sound, self.n_heads_sound, self.dropout_rate, gating_type)
+                self.d_sound, self.n_units_sound, self.dropout_rate, gating_type)
             self.layer_list_sound.append(layer)
 
         self.layer_list_delta = []
         for _ in range(self.n_layers_delta):
 
             layer = LSTM_layer(
-                self.d_delta, self.n_heads_delta, self.dropout_rate, gating_type)
+                self.d_delta, self.n_units_delta, self.dropout_rate, gating_type)
             self.layer_list_delta.append(layer)
 
         self.layer_list_combined = []
         for _ in range(self.n_layers_combined):
 
             layer = LSTM_layer(
-                self.d_combined, self.n_heads_combined, self.dropout_rate, gating_type)
+                self.d_combined, self.n_units_combined, self.dropout_rate, gating_type)
             self.layer_list_combined.append(layer)
 
         self.dropout1 = tf.keras.layers.Dropout(
@@ -472,6 +464,47 @@ class LSTM_network(tf.keras.Model):
         # logits_sound -> (batch_size, seq_len, n_sounds)
 
         return logits_sound, logits_delta
+
+
+    def get_loss(self, logits_sound, logits_delta, labels_sound, labels_delta, attention_loss=None):
+        # logits -> (batch_size, seq_len, n_classes)
+        # labels -> (batch_size, seq_len)
+
+        pad_mask_bool = tf.math.not_equal(labels_sound, self.pad_idx)
+        pad_mask = tf.cast(pad_mask_bool, dtype=tf.float32)
+        # pad_mask -> (batch_size, seq_len)
+
+        num_not_padded = tf.math.reduce_sum(pad_mask)
+        num_not_padded = tf.math.maximum(num_not_padded, 1.0)
+
+        loss_sound = tf.nn.sparse_softmax_cross_entropy_with_logits(
+            labels=labels_sound, logits=logits_sound)
+
+        if not self.weights_sound is None:
+            weights = tf.gather_nd(
+                params=self.weights_sound, indices=labels_sound[..., tf.newaxis])
+            loss_sound = loss_sound * weights
+
+        loss_delta = tf.nn.sparse_softmax_cross_entropy_with_logits(
+            labels=labels_delta, logits=logits_delta)
+
+        if not self.weights_delta is None:
+            weights = tf.gather_nd(
+                params=self.weights_delta, indices=labels_delta[..., tf.newaxis])
+            loss_delta = loss_delta * weights
+
+        loss = loss_sound + loss_delta
+        loss = loss * pad_mask
+        # loss -> (batch_size, seq_len)
+
+        loss = tf.math.reduce_sum(loss) / num_not_padded
+        # loss -> ()
+
+        if not attention_loss is None:
+            loss += attention_loss
+
+        return loss, pad_mask_bool
+
 
 class Music_transformer(tf.keras.Model):
 
