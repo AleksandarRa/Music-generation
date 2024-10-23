@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --job-name=train_music_transformer
-#SBATCH --output=out_train_transformerXL.txt
-#SBATCH -e error_train_transformerXL.err
+#SBATCH --output=gpuLogs/out_train_transformerXL.txt
+#SBATCH -e gpuLogs/error_train_transformerXL.err
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --time=0-20:00
