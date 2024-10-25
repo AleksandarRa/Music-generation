@@ -8,15 +8,12 @@ import argparse
 import pathlib
 import numpy as np
 
-CHECKPOINT_EPOCH = 30
+CHECKPOINT_EPOCH = 60
 N_FILES = 1
 BATCHSIZE = 1
 FILENAME = '0.npz'
-CHECKPOINT_NAME = 'checkpoint2_stddev_3_00'
 
-#CHECKPOINT_PATH = 'checkpoints_music/transformerXL/' + CHECKPOINT_NAME + '.h5'
 CHECKPOINT_PATH = 'checkpoints_music/transformerXL/transformerXL_checkpoint' + str(CHECKPOINT_EPOCH) + '.weights.h5'
-
 
 
 @tf.function
