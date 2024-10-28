@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --job-name=preprocess_create_npzFiles
-#SBATCH --output=gpuLogs/out_preprocessing.txt
-#SBATCH -e gpuLogs/error_preprocessing.err
+#SBATCH --output=logs/out_preprocessing.txt
+#SBATCH -e logs/error_preprocessing.err
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks=1
 #SBATCH --time=0-20:00
