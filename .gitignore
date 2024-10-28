@@ -11,6 +11,7 @@
 *.wav
 *.xopp
 *.pk
+*.json
 
 token_github.txt
 
@@ -25,6 +26,7 @@ LSTM_project/mel.mscz
 transformer-xl/.idea/*
 transformer-xl/npz_music/*
 transformer-xl/generated_samples/
+transformer-xl/data/
 transformer-xl/maestro/
 transformer-xl/datasets/
 transformer-xl/generated_midis_gitRepo/text/
