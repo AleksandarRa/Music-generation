@@ -1,0 +1,5 @@
+1 : 1734.npz | File is not a zip file
+2 : 1738.npz | File is not a zip file
+3 : 1760.npz | File is not a zip file
+4 : 1775.npz | [Errno 22] Invalid argument
+5 : 1776.npz | File is not a zip file
