@@ -1,13 +1,13 @@
 #!/bin/bash
 
 # Source and destination directories
-SOURCE_DIR="/home/radovic/Documents/masterarbeit/projects/transformer-xl/npz_music/"
+SOURCE_DIR="/home/radovic/Documents/masterarbeit/projects/transformer-xl/data/npz_seperated/npz_smd/"
 DEST_USER="aradovic"
 DEST_HOST="10.10.41.74"
-DEST_DIR="/home2/aradovic/Music-generation/transformer-xl/npz_temp"
+DEST_DIR="/home2/aradovic/Music-generation/transformer-xl/data/npz_seperated/npz_smd"
 
 # File containing the list of .npz files
-FILE_LIST="nodes/npzErrorFiles.txt"
+FILE_LIST="npzErrorFiles.txt"
 
 # Loop through each line in the file list
 while IFS= read -r line; do
