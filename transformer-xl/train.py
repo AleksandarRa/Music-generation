@@ -10,7 +10,7 @@ import argparse
 import os
 import pathlib
 
-EPOCHS = 140
+EPOCHS = 0 
 
 if __name__ == '__main__':
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
-            default='data/checkpoints_music/checkpoint' + str(EPOCHS)+ '.weights.h5', help='Path to saved model weights')
+            default=None, help='Path to saved model weights')
 
     arg_parser.add_argument('-o', '--optimizer', type=str,
                             default=None, help='Path to saved optimizer weights')
@@ -214,11 +214,11 @@ if __name__ == '__main__':
 
         if epoch % args.checkpoint_period == 0:
             checkpoint_path = os.path.join(
-                args.checkpoint_dir, f'transformerXL/transformerXL_checkpoint{epoch+EPOCHS}.weights.h5')
+                args.checkpoint_dir, f'checkpoint{epoch+EPOCHS}.weights.h5')
             model.save_weights(checkpoint_path)
 
-            optimizer_path = os.path.join(
-                args.checkpoint_dir, f'transformerXL/transformerXL_optimizer{epoch}.npy')
+            #optimizer_path = os.path.join(
+            #    args.checkpoint_dir, f'optimizer{epoch}.npy')
             # np.save(optimizer_path, optimizer.get_weights())
 
             print(f'Saved model weights at {checkpoint_path}')
