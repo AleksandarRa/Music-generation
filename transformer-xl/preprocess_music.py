@@ -10,9 +10,9 @@ import dload
 if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('-m', '--midi_dir', type=str, default='midis',
+    arg_parser.add_argument('-m', '--midi_dir', type=str, default='data/midis',
                             help='Directory where the midi files are stored')
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory where the npz files will be stored')
     arg_parser.add_argument('-n', '--n_files', type=int, default=None,
                             help='Number of files to take into account (default: all)')

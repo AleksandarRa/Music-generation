@@ -8,25 +8,27 @@ import argparse
 import os
 import pathlib
 import matplotlib.pyplot as plt
+import time
 
+EPOCH = 200
 
 if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument('n_songs', type=int,
-                            help='Number of files to generate')
+    arg_parser.add_argument('-n', '--n_songs', type=int,
+                            help='Number of files to generate', default=1)
 
-    arg_parser.add_argument('checkpoint_path', type=str,
-                            help='Path to the saved weights')
+    arg_parser.add_argument('-c', '--checkpoint_path', type=str,
+                            help = 'Path to the saved weights', default = "data/checkpoints_music/checkpoint" + str(EPOCH) + ".weights.h5")
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
                             help='Directory with the npz files')
 
-    arg_parser.add_argument('-o', '--dst_dir', type=str, default='generated_midis',
+    arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
                             help='Directory where the generated midi files will be stored')
 
-    arg_parser.add_argument('-l', '--gen_len', type=int, default=6000,
+    arg_parser.add_argument('-l', '--gen_len', type=int, default=300,
                             help='Length of the generated midis (in midi messages)')
 
     arg_parser.add_argument('-k', '--top_k', type=int, default=3)
@@ -39,6 +41,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
                             help='If activated, the attention weights will be saved as images')
+
 
     args = arg_parser.parse_args()
 
@@ -57,7 +60,7 @@ if __name__ == '__main__':
     assert isinstance(args.temp, float)
     assert args.temp > 0.0
     if args.filenames is None:
-        midi_filenames = [str(i) for i in range(1, args.n_songs + 1)]
+        midi_filenames = [str(i)+"_epochs_"+str(EPOCH) for i in range(1, args.n_songs + 1)]
     else:
         midi_filenames = args.filenames
     midi_filenames = [f + '.midi' for f in midi_filenames]
@@ -79,11 +82,23 @@ if __name__ == '__main__':
     model, _ = Music_transformer.build_from_config(
         config=config, checkpoint_path=args.checkpoint_path)
 
+    # Record the start time
+    start_time = time.time()
+    print(f"Start time: {time.ctime(start_time)}")
+
     midi_list, _, attention_weight_list, _ = generate_midis(model=model, seq_len=config.seq_len,
                                                             mem_len=config.mem_len, max_len=args.gen_len,
                                                             parser=midi_parser, filenames=filenames_sample,
                                                             pad_idx=config.pad_idx, top_k=args.top_k,
                                                             temp=args.temp)
+
+    # Record the end time
+    end_time = time.time()
+    print(f"End time: {time.ctime(end_time)}")
+
+    # Calculate the time difference
+    time_diff = end_time - start_time
+    print(f"Time taken: {time_diff:.2f} seconds")
 
     for midi, filename in zip(midi_list, midi_filenames):
         midi.save(filename)
