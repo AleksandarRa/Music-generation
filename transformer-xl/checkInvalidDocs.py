@@ -2,7 +2,7 @@ import glob
 import os
 import zipfile
 import numpy as np
-file_directory = "npz_music"
+file_directory = "data/npz_seperated/npz_maestro"
 filenames = sorted(glob.glob(os.path.join(file_directory, '*.npz')))
 cnt = 1 
 for filename in filenames:
@@ -14,9 +14,10 @@ for filename in filenames:
         print(f'{cnt} : {filename.split('/')[-1]} | {e}')
         try:
             os.remove(filename)
-            print(f"Removed invalid file: {filename}")
+            #print(f"Removed invalid file: {filename}")
         except OSError as remove_error:
-            print(f"Error removing file {filename}: {remove_error}")
+            #print(f"Error removing file {filename}: {remove_error}")
+            x=1
         cnt +=1
         continue
 
