@@ -33,6 +33,7 @@ def shuffle_ragged_2d(ragged_tensors, pad_idx, lowest_idx=5):
 
     # ragged_tensor -> RAGGED(batch_size, None)
     lens = ragged_tensors[0].row_lengths(axis=-1)
+    # kth_lowest defines which size you want to consider. if kth_lowerst=3 it will take the size of the 3th smallest song
     kth_lowest = -tf.nn.top_k(-lens, lowest_idx).values[-1]
     shuffled_tensors = [[] for _ in ragged_tensors]
 

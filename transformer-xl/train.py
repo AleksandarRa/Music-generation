@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # ============================================================
     # ============================================================
-
+    # specify tensorflow to not use eagermode -> use graph mode for better execution
     tf.config.run_functions_eagerly(False)
 
     idx_to_time = get_quant_time()
@@ -77,9 +77,10 @@ if __name__ == '__main__':
 
     use_attn_reg = config.use_attn_reg
 
+    # @tf.function to use graph mode and compute therefore better
     @tf.function
     def train_step(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list):
-
+        # tf.gradientTape enables automatic diffentiaion -> automating graient computation and parameter updates
         with tf.GradientTape() as tape:
 
             logits_sound, logits_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
@@ -150,7 +151,7 @@ if __name__ == '__main__':
 
         for batch_ragged in dataset:
 
-            batch_sound, batch_delta = shuffle_ragged_2d(batch_ragged, pad_idx)
+            batch_sound, batch_delta = shuffle_ragged_2d(batch_ragged, pad_idx, lowest_idx=1)
             # batch_sound -> (batch_size, maxlen)
             # batch_delta -> (batch_size, maxlen)
 
@@ -169,11 +170,12 @@ if __name__ == '__main__':
 
             segs_per_batch = min(max_segs_per_batch, maxlen // seq_len)
             mem_list = None
+            # choose start that no out of bound error is possible. max_len - ... ensures that the start is not out of range
+            # segs_per_batch * seq_len ensures that there is room for all segments
             start = np.random.randint(
                 0, maxlen - (segs_per_batch) * seq_len + 1)
 
             for _ in range(segs_per_batch):
-
                 seg_sound = batch_sound[:, start: start + seq_len]
                 # seg_sound -> (batch_size, seq_len)
                 seg_delta = batch_delta[:, start: start + seq_len]
