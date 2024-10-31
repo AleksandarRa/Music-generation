@@ -148,8 +148,6 @@ def generate_midis(model, seq_len, mem_len, max_len, parser, filenames, pad_idx,
     min_len = min([len(s) for s in sounds])
 
     orig_len = np.random.randint(1, min(2 * mem_len, min_len))
-    #test: set orig_len manually
-    orig_len = seq_len * 2
     assert orig_len >= 1
 
     sounds = np.array([sound[:orig_len] for sound in sounds])
