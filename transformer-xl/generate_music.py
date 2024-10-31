@@ -9,8 +9,7 @@ import pathlib
 import matplotlib.pyplot as plt
 import time
 
-CHECKPOINT_EPOCH = 20
-LENGTH = 1000
+CHECKPOINT_EPOCH = 30
 
 if __name__ == '__main__':
 
@@ -21,15 +20,15 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                             default = "checkpoints_music/transformerXL/transformerXL_checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
                             help='Directory with the npz files')
 
-    arg_parser.add_argument('-o', '--dst_dir', type=str, default='generated_midis',
+    arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
                             help='Directory where the generated midi files will be stored')
 
-    arg_parser.add_argument('-l', '--gen_len', type=int, default=LENGTH,
+    arg_parser.add_argument('-l', '--gen_len', type=int, default=300,
                             help='Length of the generated midis (in midi messages)')
 
     arg_parser.add_argument('-k', '--top_k', type=int, default=3)
@@ -61,7 +60,7 @@ if __name__ == '__main__':
     assert isinstance(args.temp, float)
     assert args.temp > 0.0
     if args.filenames is None:
-        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(CHECKPOINT_EPOCH)+"_length_"+str(LENGTH) for i in range(1, args.n_songs + 1)]
+        midi_filenames = [str(i)+"_transformerXL_epochs_"+str(CHECKPOINT_EPOCH) for i in range(1, args.n_songs + 1)]
     else:
         midi_filenames = args.filenames
     midi_filenames = [f + '.midi' for f in midi_filenames]
@@ -72,7 +71,7 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('*.npz'))
+    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('0.npz'))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
