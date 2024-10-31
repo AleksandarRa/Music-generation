@@ -62,7 +62,7 @@ def evaluate_model(inputs_sound, inputs_delta, labels_sound, labels_delta, alpha
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_temp',
                             help='Directory where the npz files are stored')
 
     arg_parser.add_argument('-w', '--weights', type=str,
