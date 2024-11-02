@@ -16,10 +16,10 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='npz_music',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
                             help='Directory where the npz files are stored')
 
-    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='checkpoints_music/transformerXL/',
+    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='data/checkpoints_music',
                             help='Directory where the saved weights will be stored')
 
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
-            default='checkpoints_music/transformerXL/transformerXL_checkpoint' + str(EPOCHS)+ '.weights.h5', help='Path to saved model weights')
+            default=None, help='Path to saved model weights')
 
     arg_parser.add_argument('-o', '--optimizer', type=str,
                             default=None, help='Path to saved optimizer weights')
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    tf.config.run_functions_eagerly(False)
+    tf.config.run_functions_eagerly(True)
 
     idx_to_time = get_quant_time()
 
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     use_attn_reg = config.use_attn_reg
 
-    @tf.function
+    #@tf.function
     def train_step(inputs_sound, inputs_delta, labels_sound, labels_delta, mem_list):
 
         with tf.GradientTape() as tape:
@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
         for batch_ragged in dataset:
 
-            batch_sound, batch_delta = shuffle_ragged_2d(batch_ragged, pad_idx)
+            batch_sound, batch_delta = shuffle_ragged_2d(batch_ragged, pad_idx, lowest_idx=1)
             # batch_sound -> (batch_size, maxlen)
             # batch_delta -> (batch_size, maxlen)
 
