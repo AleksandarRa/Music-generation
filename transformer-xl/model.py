@@ -398,42 +398,7 @@ class Music_transformer(tf.keras.Model):
 
         return res
 
-    def call(self, inputs, mem_list, next_mem_len, training, alpha=0.0):
-
-        # sounds -> (batch_size, seq_len)
-        # deltas -> (batch_size, seq_len)
-        # mem_list : list of (batch_size, mem_len, d_model) or None
-        # next_mem_len -> length of the next memory
-        # alpha -> used for evaluating to mix input before concatination of delta and sound
-        sounds, deltas = inputs
-
-        batch_size = sounds.shape[0]
-        seq_len = sounds.shape[1]
-
-        if mem_list is None:
-            mem_len = 0
-            mem_list = [None] * self.n_layers_total
-        else:
-            mem_len = mem_list[0].shape[1]
-
-        full_len = seq_len + mem_len
-
-        mask = self.get_look_ahead_mask(seq_len, mem_len)
-        # mask -> (1, 1, seq_len, full_len)
-
-        # get position encoding of size of input
-        rel_enc_sound = self.pos_enc[:full_len, :self.d_sound]
-        # reverse encoding position order. Last encoding row is the first, first row becomes the last
-        rel_enc_sound = tf.reverse(rel_enc_sound, axis=[0])
-        # rel_enc_sound -> (full_len, d_sound)
-
-        rel_enc_delta = self.pos_enc[:full_len, :self.d_delta]
-        rel_enc_delta = tf.reverse(rel_enc_delta, axis=[0])
-        # rel_enc_delta -> (full_len, d_delta)
-
-        rel_enc_combined = self.pos_enc[:full_len, :]
-        rel_enc_combined = tf.reverse(rel_enc_combined, axis=[0])
-        # rel_enc_combined -> (full_len, d_combined)
+    def transformer_seperated(self, sounds, deltas, mem_list, next_mem_len, mask, training, rel_enc_sound, rel_enc_delta):
 
         next_mem_list = []
         attention_weight_list = []
@@ -480,18 +445,64 @@ class Music_transformer(tf.keras.Model):
             attention_loss_list.append(attention_loss)
         # deltas -> (batch_size, seq_len, d_delta)
 
-        x = tf.concat((sounds, deltas), axis=-1)
+        concat_output = tf.concat((sounds, deltas), axis=-1)
+        return concat_output, next_mem_list, attention_weight_list, attention_loss_list
 
+    def call(self, inputs, mem_list, next_mem_len, training, alpha=0.0, inputs2=None):
+
+        # sounds -> (batch_size, seq_len)
+        # deltas -> (batch_size, seq_len)
+        # mem_list : list of (batch_size, mem_len, d_model) or None
+        # next_mem_len -> length of the next memory
+        # alpha -> used for evaluating to mix input before concatination of delta and sound
+        sounds, deltas = inputs
+
+        batch_size = sounds.shape[0]
+        seq_len = sounds.shape[1]
+
+        if mem_list is None:
+            mem_len = 0
+            mem_list = [None] * self.n_layers_total
+        else:
+            mem_len = mem_list[0].shape[1]
+
+        full_len = seq_len + mem_len
+
+        mask = self.get_look_ahead_mask(seq_len, mem_len)
+        # mask -> (1, 1, seq_len, full_len)
+
+        # get position encoding of size of input
+        rel_enc_sound = self.pos_enc[:full_len, :self.d_sound]
+        # reverse encoding position order. Last encoding row is the first, first row becomes the last
+        rel_enc_sound = tf.reverse(rel_enc_sound, axis=[0])
+        # rel_enc_sound -> (full_len, d_sound)
+
+        rel_enc_delta = self.pos_enc[:full_len, :self.d_delta]
+        rel_enc_delta = tf.reverse(rel_enc_delta, axis=[0])
+        # rel_enc_delta -> (full_len, d_delta)
+
+        rel_enc_combined = self.pos_enc[:full_len, :]
+        rel_enc_combined = tf.reverse(rel_enc_combined, axis=[0])
+        # rel_enc_combined -> (full_len, d_combined)
+
+        x, next_mem_list, attention_weight_list, attention_loss_list = self.transformer_seperated(sounds=sounds, deltas=deltas,
+                                                                                                  mem_list=mem_list, next_mem_len=next_mem_len,
+                                                                                                  mask=mask, training=training,
+                                                                                                  rel_enc_sound=rel_enc_sound,
+                                                                                                  rel_enc_delta=rel_enc_delta)
         # evaluating process
         if alpha != 0.0:
-            input_concat = tf.concat((input_sound_embedded, input_delta_embedded), axis=-1)
+            sounds2, deltas2 = inputs2
+            sounds2 = sounds2[:, -seq_len:]
+            deltas2= deltas2[:, -seq_len:]
 
-            split_index = int(x.shape[1] * alpha)
-            x_part = x[:, :split_index, :]  # First half from x
-            input_concat_part = input_concat[:, split_index:, :]
+            x2, _, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
+                                                            mem_list = mem_list, next_mem_len = next_mem_len,
+                                                            mask = mask, training = training,
+                                                            rel_enc_sound = rel_enc_sound,
+                                                            rel_enc_delta = rel_enc_delta)
 
-            # Concatenate the parts to form the result
-            x = tf.concat([x_part, input_concat_part], axis=1)
+            x = alpha * x + (1 - alpha) * x2
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
