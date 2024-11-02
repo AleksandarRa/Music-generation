@@ -63,8 +63,7 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
 
 
-def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0):
-
+def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0):
 
     max_len = sounds.size * N_GEN_SEQ
     seq_len = sounds.size
@@ -132,7 +131,24 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0):
 
     return sounds, deltas, next_mem_list, attention_weight_list, attention_loss_list
 
+def saveValues(npz_filenames, song_len, cutted_song_len, acc_metric_sound, acc_metric_delta, loss_mse, loss_mae):
 
+    values = [('filename', os.path.basename(npz_filenames[0])),
+              ('song length', song_len),
+              ('input length', cutted_song_len),
+              ('output length', cutted_song_len * N_GEN_SEQ),
+              ('acc_sound', acc_metric_sound),
+              ('acc_delta', acc_metric_delta),
+              ('loss mse', loss_mse),
+              ('loss mae', loss_mae)]
+
+    # Open the file in append mode and write the values
+    with open('logs/interpolate_logs.csv', mode='a', newline='') as file:
+        writer = csv.writer(file)
+        # Write the values as a row
+        #writer.writerow([name for name, result in values])  # Headers (Optional)
+        # Write the actual numeric values
+        writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
 if __name__ == '__main__':
 
@@ -208,8 +224,8 @@ if __name__ == '__main__':
 
     song_len = soundsAll[0].shape[0]
     #test
-    cutted_song_len = int(song_len / 4)
-    #cutted_song_len = int(song_len / 405)
+    #cutted_song_len = int(song_len / 4)
+    cutted_song_len = int(song_len / 405)
 
 
     sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
@@ -222,35 +238,10 @@ if __name__ == '__main__':
     sounds_no_interpol, deltas_no_interpol, attention_loss_list, attention_weight_list, _ = generate(model=model, sounds=sounds, deltas=deltas,
                                                             pad_idx=config.pad_idx, top_k=args.top_k,
                                                             temp=args.temp)
-    sounds_no_interpol = tf.convert_to_tensor(sounds_no_interpol)
-    deltas_no_interpol = tf.convert_to_tensor(deltas_no_interpol)
-    labels_sounds = tf.convert_to_tensor(labels_sounds)
-    labels_deltas = tf.convert_to_tensor(labels_deltas)
 
     loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds_no_interpol, deltas_no_interpol, labels_sounds, labels_deltas)
+    saveValues(npz_filenames, song_len, cutted_song_len, acc_metric_sound.result(), acc_metric_delta.result(), loss_mse.result(), loss_mae.result())
 
-    # midi_list = [midi_parser.features_to_midi(
-    #    sound, delta) for sound, delta in zip(sounds_no_interpol, deltas_no_interpol)]
-
-   # for midi, filename in zip(midi_list, midi_filenames):
-    #    midi.save("withoutInterpolation")
-
-    values = [('filename', os.path.basename(npz_filenames[0])),
-              ('song length', song_len),
-              ('input length', cutted_song_len),
-              ('output length', cutted_song_len * N_GEN_SEQ),
-              ('acc_sound', acc_metric_sound.result()),
-              ('acc_delta', acc_metric_delta.result()),
-              ('loss mse', loss_mse.result()),
-              ('loss mae', loss_mae.result())]
-
-    # Open the file in append mode and write the values
-    with open('logs/interpolate_logs.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        # Write the values as a row
-        writer.writerow([name for name, result in values])  # Headers (Optional)
-        # Write the actual numeric values
-        writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
     if args.visualize_attention:
 
