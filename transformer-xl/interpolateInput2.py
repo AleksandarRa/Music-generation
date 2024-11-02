@@ -175,6 +175,9 @@ if __name__ == '__main__':
     arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
 
+    arg_parser.add_argument('-l', '--input_length', nargs='+', type=int, default=None,
+                            help='Names of the generated midis. Length must be equal to n_songs')
+
     arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
                             help='If activated, the attention weights will be saved as images')
 
@@ -224,9 +227,10 @@ if __name__ == '__main__':
 
     song_len = soundsAll[0].shape[0]
     #test
-    #cutted_song_len = int(song_len / 4)
-    cutted_song_len = int(song_len / 405)
+    cutted_song_len = int(song_len / 4)
 
+    if args.input_length is not None:
+        cutted_song_len = args.input_length[0]
 
     sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
     deltas = np.array([delta[:cutted_song_len] for delta in deltasAll])
