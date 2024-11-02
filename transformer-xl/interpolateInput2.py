@@ -22,10 +22,8 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
     loss_metric_mse = tf.keras.metrics.Mean(name='loss')
     loss_metric_mae = tf.keras.metrics.Mean(name='loss')
-    acc_metric_sound = tf.keras.metrics.SparseCategoricalAccuracy(
-        name='acc_sound')
-    acc_metric_delta = tf.keras.metrics.SparseCategoricalAccuracy(
-        name='acc_delta')
+    acc_metric_sound = tf.keras.metrics.Accuracy(name='acc sound')
+    acc_metric_delta = tf.keras.metrics.Accuracy(name='acc delta')
 
     # Compute MSE loss
     mse_loss = tf.keras.losses.MeanSquaredError()
@@ -57,15 +55,10 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     loss_mse = tf.math.reduce_mean(loss_mse)
     loss_mae = tf.math.reduce_mean(loss_mae)
 
-    #outputs_sound = tf.nn.softmax(logits_sound, axis=-1)
-    # outputs_sound -> (batch_size, seq_len, n_sounds)
-    #outputs_delta = tf.nn.softmax(logits_delta, axis=-1)
-    # outputs_delta -> (batch_size, seq_len, n_deltas)
-
     loss_metric_mse(loss_mse)
     loss_metric_mae(loss_mae)
-    acc_metric_sound(labels_sound, logits_sound)
-    acc_metric_delta(labels_delta, logits_delta)
+    acc_metric_sound.update_state(labels_sound, logits_sound)
+    acc_metric_delta.update_state(labels_delta, logits_delta)
 
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
 
@@ -205,7 +198,7 @@ if __name__ == '__main__':
 
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
     model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=None)
+        config=config, checkpoint_path=args.checkpoint_path)
 
 
     batch_size = len(filenames_sample)
