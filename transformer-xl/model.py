@@ -493,12 +493,15 @@ class Music_transformer(tf.keras.Model):
         # evaluating process
         if alpha != 0.0 and mem_list[0] is not None:
             sounds2, deltas2 = inputs2
-
-            x2, _, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
-                                                            mem_list = mem_list, next_mem_len = next_mem_len,
+            mem = mem_list[self.n_layers_combined]
+            output, _, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
+                                                            mem_list = [None] * self.n_layers_total, next_mem_len = next_mem_len,
                                                             mask = mask, training = training,
                                                             rel_enc_sound = rel_enc_sound,
                                                             rel_enc_delta = rel_enc_delta)
+            x2=output[:,-1,:]
+            mem2=output[:,:-1,:]
+            mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1 - alpha) * mem2
             x = alpha * x + (1 - alpha) * x2
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
