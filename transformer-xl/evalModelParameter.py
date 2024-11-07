@@ -1,5 +1,6 @@
 import csv
 
+from config_music import seq_len
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -61,14 +62,11 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
 
 
-def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, interpol_len=0, sounds2=None, deltas2=None):
+def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top_k=1):
 
-    max_len = sounds.size * N_GEN_SEQ
-    seq_len = sounds.size
-    mem_len = seq_len
+    max_len = gen_len
     i=0
-    full_len = mem_len + seq_len - 1
-
+    alpha = 0
     inputs_sound = tf.constant(sounds[:, -seq_len:])
     inputs_delta = tf.constant(deltas[:, -seq_len:])
 
@@ -119,18 +117,14 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, inter
 
         inputs_sound = tf.constant(new_sounds)
         inputs_delta = tf.constant(new_deltas)
-
-        inputs_sound2 = tf.constant(sounds2[:, i:(seq_len+i+1)])
-        inputs_delta2 = tf.constant(deltas2[:, i:(seq_len+i)+1])
         i += 1
-
         outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
             inputs=(inputs_sound, inputs_delta),
             mem_list=next_mem_list,
             next_mem_len=mem_len,
             training=False,
             alpha=alpha,
-            inputs2=(inputs_sound2, inputs_delta2)
+            inputs2=(None, None)
         )
 
     sounds = sounds[:, max_len:]
@@ -138,25 +132,24 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, inter
 
     return sounds, deltas, next_mem_list, attention_weight_list, attention_loss_list
 
-def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound, acc_metric_delta, loss_mse, loss_mae, alpha=0):
+def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_metric_sound, acc_metric_delta, loss_mse, loss_mae, alpha=0):
 
     values = [('filename', os.path.basename(npz_filenames[0])),
-              ('mixing filename', os.path.basename(npz_filenames2[0])),
-              ('aplha', alpha),
               ('song length', song_len),
-              ('input length', cutted_song_len),
-              ('interpolation length', interpol_len),
-              ('output length', cutted_song_len * N_GEN_SEQ),
+              ('seq_len', seq_len ),
+              ('gen_len', gen_len),
+              ('mem_len', mem_len),
+              ('temp', temp),
               ('acc_sound', acc_metric_sound),
               ('acc_delta', acc_metric_delta),
               ('loss mse', loss_mse),
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_logs.csv', mode='a', newline='') as file:
+    with open('logs/analyseParameters.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
-        #writer.writerow([name for name, result in values])  # Headers (Optional)
+        writer.writerow([name for name, result in values])  # Headers (Optional)
         # Write the actual numeric values
         writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
@@ -171,54 +164,16 @@ if __name__ == '__main__':
                             help = 'Path to the saved weights',
                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
-                            help='Directory with the npz files')
-
-    arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
-                            help='Directory where the generated midi files will be stored')
-
-    arg_parser.add_argument('-k', '--top_k', type=int, default=1)
-
-    arg_parser.add_argument('-t', '--temp', type=float, default=0.35,
-                            help='Temperature of softmax')
-
     arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
-
-    arg_parser.add_argument('-l', '--input_length', nargs='+', type=int, default=None,
-                            help='Names of the generated midis. Length must be equal to n_songs')
-
-    arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
-                            help='If activated, the attention weights will be saved as images')
 
 
     args = arg_parser.parse_args()
 
-    assert isinstance(args.n_songs, int)
-    assert args.n_songs > 0
-    assert pathlib.Path(args.checkpoint_path).is_file()
-    assert pathlib.Path(args.npz_dir).is_dir()
-    if pathlib.Path(args.dst_dir).exists():
-        assert pathlib.Path(args.dst_dir).is_dir()
-    else:
-        pathlib.Path(args.dst_dir).mkdir(parents=True, exist_ok=True)
-    assert isinstance(args.top_k, int)
-    assert args.top_k > 0
-    assert isinstance(args.temp, float)
-    assert args.temp > 0.0
-    if args.filenames is None:
-        midi_filenames = [str(i)+"_interpolateInput" for i in range(1, args.n_songs + 1)]
-    else:
-        midi_filenames = args.filenames
-    midi_filenames = [f + '.midi' for f in midi_filenames]
-    midi_filenames = [os.path.join(args.dst_dir, f) for f in midi_filenames]
-    assert len(midi_filenames) == args.n_songs
-    assert len(set(midi_filenames)) == len(midi_filenames)
-
     # ============================================================
     # ============================================================
 
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('0.npz'))
+    npz_filenames = list(pathlib.Path("data/npz_temp").rglob('0.npz'))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
@@ -234,57 +189,43 @@ if __name__ == '__main__':
     batch_size = len(filenames_sample)
     soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
                                  for filename in filenames_sample])
-
-
     song_len = soundsAll[0].shape[0]
-    cutted_song_len = int(song_len / 4)
-    interpol_len = cutted_song_len
 
-    if args.input_length is not None:
-        cutted_song_len = args.input_length[0]
+    seq_len_list = [250, 500, 1000, 2000]
+    mem_len_list = [0, 250, 500, 1000, 2000]
+    gen_len_list = [250, 500, 1000, 2000]
+    temp_list = [0.1, 0.25, 0.5, 0.75, 1]
 
-    sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
-    deltas = np.array([delta[:cutted_song_len] for delta in deltasAll])
+    for seq_len in seq_len_list:
+        print("seq_len:", seq_len)
 
-    labels_sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    labels_deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+        sounds = np.array([sound[:seq_len] for sound in soundsAll])
+        deltas = np.array([delta[:seq_len] for delta in deltasAll])
 
-    sounds2 = np.array([sound[:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    deltas2 = np.array([delta[:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+        for gen_len in gen_len_list:
+            print("gen_len:", gen_len)
+            labels_sounds = np.array(
+                [sound[seq_len:seq_len + gen_len] for sound in soundsAll])
+            labels_deltas = np.array(
+                [delta[seq_len:seq_len + gen_len] for delta in deltasAll])
 
-    alphas = np.linspace(0,1,11)
-    for alpha in alphas:
-        print("alpha:", alpha)
+            for mem_len in mem_len_list:
+                print("mem_len:", mem_len)
+                for temp in temp_list:
+                    print("temp:", temp)
+                    # compute the output of the whole song with the first 25% of the song
+                    sounds, deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
+                                                                                             sounds=sounds,
+                                                                                             deltas=deltas,
+                                                                                             pad_idx=config.pad_idx,
+                                                                                             seq_len=seq_len,
+                                                                                             mem_len=mem_len,
+                                                                                             gen_len=gen_len,
+                                                                                             temp=temp)
 
-        # compute the output of the whole song with the first 25% of the song
-        sounds, deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
-                                                                                 sounds=sounds,
-                                                                                 deltas=deltas,
-                                                                                 pad_idx=config.pad_idx,
-                                                                                 top_k=args.top_k,
-                                                                                 temp=args.temp,
-                                                                                 alpha=alpha,
-                                                                                 interpol_len=interpol_len,
-                                                                                 sounds2=sounds2,
-                                                                                 deltas2=deltas2)
-
-        loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds,
-                                                                             deltas, labels_sounds,
-                                                                             labels_deltas)
-        saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
-                  loss_mse.result(), loss_mae.result(), alpha)
-
-    if args.visualize_attention:
-
-        viz_dir = 'vizualized_attention'
-        pathlib.Path(viz_dir).mkdir(parents=True, exist_ok=True)
-
-        for layer_idx, layer_weights in enumerate(attention_weight_list, 1):
-            for head_idx, head_weights in enumerate(layer_weights[0, ...].numpy(), 1):
-
-                img_path = os.path.join(
-                    viz_dir, f'layer{layer_idx}_head{head_idx}.png')
-                plt.figure(figsize=(17, 14))
-                plt.step(np.arange(head_weights.shape[1]), head_weights[0])
-                #plt.imsave(img_path, head_weights, cmap='Reds')
-                plt.savefig(img_path)
+                    loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds,
+                                                                                         deltas, labels_sounds,
+                                                                                         labels_deltas)
+                    saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_metric_sound.result(), acc_metric_delta.result(),
+                               loss_mse.result(), loss_mae.result())
+                    exit()
