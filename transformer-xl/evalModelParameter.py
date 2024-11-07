@@ -228,4 +228,3 @@ if __name__ == '__main__':
                                                                                          labels_deltas)
                     saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_metric_sound.result(), acc_metric_delta.result(),
                                loss_mse.result(), loss_mae.result())
-                    exit()
