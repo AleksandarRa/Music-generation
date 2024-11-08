@@ -222,7 +222,10 @@ if __name__ == '__main__':
                                                                                              mem_len=mem_len,
                                                                                              gen_len=gen_len,
                                                                                              temp=temp)
-
+                    print("sound: ",sounds.size)
+                    print("delta: ",deltas.size)
+                    print("label sound: ",labels_sounds.size)
+                    print("label delta: ",labels_deltas.size)
                     loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds,
                                                                                          deltas, labels_sounds,
                                                                                          labels_deltas)
