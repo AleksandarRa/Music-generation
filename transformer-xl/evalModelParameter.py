@@ -149,7 +149,7 @@ def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_met
     with open('logs/analyseParameters.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
-        writer.writerow([name for name, result in values])  # Headers (Optional)
+        #writer.writerow([name for name, result in values])  # Headers (Optional)
         # Write the actual numeric values
         writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
@@ -194,7 +194,7 @@ if __name__ == '__main__':
     seq_len_list = [250, 500, 1000, 2000]
     mem_len_list = [0, 250, 500, 1000, 2000]
     gen_len_list = [250, 500, 1000, 2000]
-    temp_list = [0.1, 0.25, 0.5, 0.75, 1]
+    temp_list = [0.1, 0.25, 0.5, 0.75, 1.0]
 
     for seq_len in seq_len_list:
         print("seq_len:", seq_len)
