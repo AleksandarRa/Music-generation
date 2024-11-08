@@ -243,11 +243,11 @@ if __name__ == '__main__':
     if args.input_length is not None:
         cutted_song_len = args.input_length[0]
 
-    sounds = np.array([sound[:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    deltas = np.array([delta[:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+    sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
+    deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
 
-    labels_sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+2)] for sound in soundsAll])
-    labels_deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+2)] for delta in deltasAll])
+    labels_sounds = np.array([sound[cutted_song_len*2:cutted_song_len*(N_GEN_SEQ+2)] for sound in soundsAll])
+    labels_deltas = np.array([delta[cutted_song_len*2:cutted_song_len*(N_GEN_SEQ+2)] for delta in deltasAll])
 
     sounds2 = np.array([sound[:cutted_song_len] for sound in soundsAll])
     deltas2 = np.array([delta[:cutted_song_len] for delta in deltasAll])
