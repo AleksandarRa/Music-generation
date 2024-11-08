@@ -249,8 +249,8 @@ if __name__ == '__main__':
     labels_sounds = np.array([sound[cutted_song_len*2:cutted_song_len*(N_GEN_SEQ+2)] for sound in soundsAll])
     labels_deltas = np.array([delta[cutted_song_len*2:cutted_song_len*(N_GEN_SEQ+2)] for delta in deltasAll])
 
-    sounds2 = np.array([sound[:cutted_song_len] for sound in soundsAll])
-    deltas2 = np.array([delta[:cutted_song_len] for delta in deltasAll])
+    sounds2 = np.array([sound[:cutted_song_len*2] for sound in soundsAll])
+    deltas2 = np.array([delta[:cutted_song_len*2] for delta in deltasAll])
 
     alphas = np.linspace(0,1,11)
     for alpha in alphas:
