@@ -127,8 +127,8 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
             inputs2=(None, None)
         )
 
-    sounds = sounds[:, max_len:]
-    deltas = deltas[:, max_len:]
+    sounds = sounds[:, seq_len:]
+    deltas = deltas[:, seq_len:]
 
     return sounds, deltas, next_mem_list, attention_weight_list, attention_loss_list
 
@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
     seq_len_list = [250, 500, 1000, 2000]
     mem_len_list = [0, 250, 500, 1000, 2000]
-    gen_len_list = [250, 500, 1000, 2000]
+    gen_len_list = [500, 1000, 2000]
     temp_list = [0.1, 0.25, 0.5, 0.75, 1.0]
 
     for seq_len in seq_len_list:
