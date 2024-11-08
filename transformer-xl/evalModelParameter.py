@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
     seq_len_list = [250, 500, 1000, 2000]
     mem_len_list = [0, 250, 500, 1000, 2000]
-    gen_len_list = [500, 1000, 2000]
+    gen_len_list = [250, 500, 1000, 2000]
     temp_list = [0.1, 0.25, 0.5, 0.75, 1.0]
 
     for seq_len in seq_len_list:
@@ -214,7 +214,7 @@ if __name__ == '__main__':
                 for temp in temp_list:
                     print("temp:", temp)
                     # compute the output of the whole song with the first 25% of the song
-                    sounds, deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
+                    out_sounds, out_deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
                                                                                              sounds=sounds,
                                                                                              deltas=deltas,
                                                                                              pad_idx=config.pad_idx,
@@ -223,8 +223,8 @@ if __name__ == '__main__':
                                                                                              gen_len=gen_len,
                                                                                              temp=temp)
 
-                    loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds,
-                                                                                         deltas, labels_sounds,
+                    loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
+                                                                                         out_deltas, labels_sounds,
                                                                                          labels_deltas)
                     saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_metric_sound.result(), acc_metric_delta.result(),
                                loss_mse.result(), loss_mae.result())
