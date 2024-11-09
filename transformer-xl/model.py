@@ -448,7 +448,7 @@ class Music_transformer(tf.keras.Model):
         concat_output = tf.concat((sounds, deltas), axis=-1)
         return concat_output, next_mem_list, attention_weight_list, attention_loss_list
 
-    def call(self, inputs, mem_list, next_mem_len, training, alpha=0.0, inputs2=None):
+    def call(self, inputs, mem_list, next_mem_len, training, mem_list2=None,  alpha=0.0, inputs2=None):
 
         # sounds -> (batch_size, seq_len)
         # deltas -> (batch_size, seq_len)
@@ -465,6 +465,9 @@ class Music_transformer(tf.keras.Model):
             mem_list = [None] * self.n_layers_total
         else:
             mem_len = mem_list[0].shape[1]
+
+        if mem_list2 is None:
+            mem_list2 = [None] * (self.n_layers_combined +1)
 
         full_len = seq_len + mem_len
 
@@ -491,18 +494,21 @@ class Music_transformer(tf.keras.Model):
                                                                                                   rel_enc_sound=rel_enc_sound,
                                                                                                   rel_enc_delta=rel_enc_delta)
         # evaluating process
-        if alpha != 0.0 and mem_list[0] is not None:
+        if alpha != 0.0:
             sounds2, deltas2 = inputs2
-            mem = mem_list[self.n_layers_combined]
-            output, _, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
-                                                            mem_list = [None] * self.n_layers_total, next_mem_len = next_mem_len,
+
+
+            x2, next_mem_list2, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
+                                                            mem_list = mem_list2, next_mem_len = next_mem_len,
                                                             mask = mask, training = training,
                                                             rel_enc_sound = rel_enc_sound,
                                                             rel_enc_delta = rel_enc_delta)
-            x2=output[:,-1,:]
-            mem2=output[:,:-1,:]
-            mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1 - alpha) * mem2
+            next_mem_list2.append(self.get_next_mem(mem_list2[self.n_layers_combined], x2, next_mem_len))
+            if mem_list[self.n_layers_combined] is not None:
+                mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1 - alpha) * mem_list2[self.n_layers_combined]
             x = alpha * x + (1 - alpha) * x2
+        else:
+            next_mem_list2 = next_mem_list
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
@@ -530,7 +536,7 @@ class Music_transformer(tf.keras.Model):
         logits_delta = self.final_delta(x)
         # logits_sound -> (batch_size, seq_len, n_sounds)
 
-        return logits_sound, logits_delta, next_mem_list, attention_weight_list, attention_loss_list
+        return logits_sound, logits_delta, next_mem_list, next_mem_list2, attention_weight_list, attention_loss_list
 
     def get_loss(self, logits_sound, logits_delta, labels_sound, labels_delta, attention_loss=None):
 
