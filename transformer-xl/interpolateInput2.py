@@ -257,7 +257,7 @@ if __name__ == '__main__':
         print("alpha:", alpha)
 
         # compute the output of the whole song with the first 25% of the song
-        sounds, deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
+        out_sounds, out_deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
                                                                                  sounds=sounds,
                                                                                  deltas=deltas,
                                                                                  pad_idx=config.pad_idx,
@@ -268,8 +268,8 @@ if __name__ == '__main__':
                                                                                  sounds2=sounds2,
                                                                                  deltas2=deltas2)
 
-        loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, sounds,
-                                                                             deltas, labels_sounds,
+        loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
+                                                                             out_deltas, labels_sounds,
                                                                              labels_deltas)
         saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
                   loss_mse.result(), loss_mae.result(), alpha)
