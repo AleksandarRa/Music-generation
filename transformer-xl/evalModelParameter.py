@@ -182,8 +182,6 @@ if __name__ == '__main__':
 
     tf.config.run_functions_eagerly(False)
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
-    model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=args.checkpoint_path)
 
 
     batch_size = len(filenames_sample)
@@ -191,10 +189,13 @@ if __name__ == '__main__':
                                  for filename in filenames_sample])
     song_len = soundsAll[0].shape[0]
 
-    seq_len_list = [250, 500, 1000, 2000]
-    mem_len_list = [0, 250, 500, 1000, 2000]
-    gen_len_list = [250, 500, 1000, 2000]
-    temp_list = [0.1, 0.25, 0.5, 0.75, 1.0]
+    model, _ = Music_transformer.build_from_config(
+        config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
+
+    seq_len_list = [1000, 2000, 3000]
+    gen_len_list = [250, 500, 1000, 2000, 3000]
+    mem_len_list = [0, 500, 1000, 2000, 3000]
+    temp_list = [0.1, 0.5, 1.0]
 
     for seq_len in seq_len_list:
         print("seq_len:", seq_len)

@@ -576,14 +576,14 @@ class Music_transformer(tf.keras.Model):
         return loss, pad_mask_bool
 
     @staticmethod
-    def build_from_config(config, checkpoint_path=None, optimizer_path=None):
+    def build_from_config(config, checkpoint_path=None, optimizer_path=None, max_seq_len=2048):
 
         model = Music_transformer(d_sound=config.d_sound, d_delta=config.d_delta,
                                   n_heads_sound=config.n_heads_sound, n_heads_delta=config.n_heads_delta,
                                   n_heads_combined=config.n_heads_combined, n_layers_sound=config.n_layers_sound,
                                   n_layers_delta=config.n_layers_delta, n_layers_combined=config.n_layers_combined,
                                   n_sounds=config.n_sounds, n_deltas=config.n_deltas,
-                                  dropout_rate=config.dropout_rate, pad_idx=config.pad_idx)
+                                  dropout_rate=config.dropout_rate, pad_idx=config.pad_idx, max_seq_len=max_seq_len)
 
         if not checkpoint_path is None:
 
