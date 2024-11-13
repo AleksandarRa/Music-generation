@@ -173,47 +173,47 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    npz_filenames = list(pathlib.Path("data/npz_temp").rglob('0.npz'))
-    assert len(npz_filenames) > 0
-    filenames_sample = np.random.choice(
-        npz_filenames, args.n_songs, replace=False)
+    filenames_npz =['1733.npz', '1787.npz', '1280.npz']
+    for filename_npz in filenames_npz:
+        print("filename:", filename_npz)
+        npz_filenames = list(pathlib.Path("data/npz_temp").rglob(filename_npz))
+        assert len(npz_filenames) > 0
+        filenames_sample = np.random.choice(
+            npz_filenames, args.n_songs, replace=False)
 
-    idx_to_time = get_quant_time()
+        idx_to_time = get_quant_time()
 
-    tf.config.run_functions_eagerly(False)
-    midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
+        tf.config.run_functions_eagerly(False)
+        midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
 
 
-    batch_size = len(filenames_sample)
-    soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
-                                 for filename in filenames_sample])
-    song_len = soundsAll[0].shape[0]
+        batch_size = len(filenames_sample)
+        soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
+                                     for filename in filenames_sample])
+        song_len = soundsAll[0].shape[0]
 
-    model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
+        model, _ = Music_transformer.build_from_config(
+            config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
 
-    seq_len_list = [1000, 2000, 3000]
-    gen_len_list = [250, 500, 1000, 2000, 3000]
-    mem_len_list = [0, 500, 1000, 2000, 3000]
-    temp_list = [0.1, 0.5, 1.0]
+        seq_len_list = [250, 500, 1000, 1500, 2000, 2500, 3000]
+        gen_len_list = [250, 500, 1000, 1500, 2000, 2500, 3000]
+        mem_len_list = [0, 250, 500, 1000, 1500, 2000, 2500, 3000]
+        temp = 0.5
+        for seq_len in seq_len_list:
+            print("seq_len:", seq_len)
 
-    for seq_len in seq_len_list:
-        print("seq_len:", seq_len)
+            sounds = np.array([sound[:seq_len] for sound in soundsAll])
+            deltas = np.array([delta[:seq_len] for delta in deltasAll])
 
-        sounds = np.array([sound[:seq_len] for sound in soundsAll])
-        deltas = np.array([delta[:seq_len] for delta in deltasAll])
+            for gen_len in gen_len_list:
+                print("gen_len:", gen_len)
+                labels_sounds = np.array(
+                    [sound[seq_len:seq_len + gen_len] for sound in soundsAll])
+                labels_deltas = np.array(
+                    [delta[seq_len:seq_len + gen_len] for delta in deltasAll])
 
-        for gen_len in gen_len_list:
-            print("gen_len:", gen_len)
-            labels_sounds = np.array(
-                [sound[seq_len:seq_len + gen_len] for sound in soundsAll])
-            labels_deltas = np.array(
-                [delta[seq_len:seq_len + gen_len] for delta in deltasAll])
-
-            for mem_len in mem_len_list:
-                print("mem_len:", mem_len)
-                for temp in temp_list:
-                    print("temp:", temp)
+                for mem_len in mem_len_list:
+                    print("mem_len:", mem_len)
                     # compute the output of the whole song with the first 25% of the song
                     out_sounds, out_deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
                                                                                              sounds=sounds,
