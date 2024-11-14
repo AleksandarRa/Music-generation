@@ -140,7 +140,7 @@ def saveValues(npz_filenames, npz_filenames2, label, song_len, cutted_song_len, 
 
     values = [('filename 1', os.path.basename(npz_filenames[0])),
               ('filename 2', os.path.basename(npz_filenames2[0])),
-              ('label', os.path.basename(label[1])),
+              ('label', os.path.basename(label[0])),
               ('alpha', alpha),
               ('song length', song_len),
               ('input length', cutted_song_len),
