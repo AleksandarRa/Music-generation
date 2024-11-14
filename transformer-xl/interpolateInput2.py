@@ -61,16 +61,18 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
 
 
-def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, sounds2=None, deltas2=None):
+def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1, alpha=0.0, sounds2=None, deltas2=None):
 
     max_len = sounds.size * N_GEN_SEQ
     seq_len = sounds.size
     mem_len = seq_len
-    i=0
     full_len = mem_len + seq_len - 1
 
-    inputs_sound = tf.constant(sounds[:, -seq_len:])
-    inputs_delta = tf.constant(deltas[:, -seq_len:])
+    inputs_sound = tf.constant(sounds[:, :])
+    inputs_delta = tf.constant(deltas[:, :])
+
+    inputs_sound2 = tf.constant(sounds2[:, :])
+    inputs_delta2 = tf.constant(deltas2[:, :])
 
     outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
         inputs=(inputs_sound, inputs_delta),
@@ -78,7 +80,7 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, sound
         next_mem_len=mem_len,
         training=False,
         alpha=alpha,
-        inputs2=(None, None)
+        inputs2=(inputs_sound2, inputs_delta2)
     )
 
     # tqdm used to output a process bar
@@ -120,18 +122,13 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, sound
         inputs_sound = tf.constant(new_sounds)
         inputs_delta = tf.constant(new_deltas)
 
-        inputs_sound2 = tf.reshape(tf.constant(sounds2[:, (seq_len+i)]), (1,1))
-        inputs_delta2 = tf.reshape(tf.constant(deltas2[:, (seq_len+i)]), (1,1))
-        i += 1
-
-        outputs_sound, outputs_delta, next_mem_list, next_mem_list2, attention_weight_list, attention_loss_list = model(
+        outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
             inputs=(inputs_sound, inputs_delta),
             mem_list=next_mem_list,
-            mem_list2=next_mem_list2,
             next_mem_len=mem_len,
             training=False,
             alpha=alpha,
-            inputs2=(inputs_sound2, inputs_delta2)
+            inputs2=(None, None)
         )
 
     sounds = sounds[:, max_len:]
@@ -157,7 +154,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpo
     with open('logs/interpolate_logs.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
-        #writer.writerow([name for name, result in values])  # Headers (Optional)
+        # writer.writerow([name for name, result in values])  # Headers (Optional)
         # Write the actual numeric values
         writer.writerow([result.numpy() if hasattr(result, 'numpy') else result for name, result in values])
 
@@ -224,9 +221,14 @@ if __name__ == '__main__':
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
 
+    npz_filenames2 = list(pathlib.Path(args.npz_dir).rglob('1280.npz'))
+    assert len(npz_filenames2) > 0
+    filenames_sample2 = np.random.choice(
+        npz_filenames2, args.n_songs, replace=False)
+
     idx_to_time = get_quant_time()
 
-    tf.config.run_functions_eagerly(False)
+    tf.config.run_functions_eagerly(True)
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
     model, _ = Music_transformer.build_from_config(
         config=config, checkpoint_path=args.checkpoint_path)
@@ -236,9 +238,11 @@ if __name__ == '__main__':
     soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
                                  for filename in filenames_sample])
 
+    soundsAll2, deltasAll2 = zip(*[midi_parser.load_features(filename)
+                                 for filename in filenames_sample2])
 
     song_len = soundsAll[0].shape[0]
-    cutted_song_len = int(song_len / 4)
+    cutted_song_len = 1500
     interpol_len = cutted_song_len
 
     if args.input_length is not None:
@@ -250,8 +254,12 @@ if __name__ == '__main__':
     labels_sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
     labels_deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
 
-    sounds2 = np.array([sound[:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    deltas2 = np.array([delta[:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+    sounds2 = np.array([sound[:cutted_song_len] for sound in soundsAll2])
+    deltas2 = np.array([delta[:cutted_song_len] for delta in deltasAll2])
+
+    labels_sounds2 = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll2])
+    labels_deltas2 = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll2])
+
 
     alphas = np.linspace(0,1,11)
     for alpha in alphas:
@@ -265,15 +273,21 @@ if __name__ == '__main__':
                                                                                  top_k=args.top_k,
                                                                                  temp=args.temp,
                                                                                  alpha=alpha,
-                                                                                 interpol_len=interpol_len,
                                                                                  sounds2=sounds2,
                                                                                  deltas2=deltas2)
 
         loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
                                                                              out_deltas, labels_sounds,
                                                                              labels_deltas)
-        saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
+        saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
                   loss_mse.result(), loss_mae.result(), alpha)
+
+        loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
+                                                                             out_deltas, labels_sounds2,
+                                                                             labels_deltas2)
+        saveValues(npz_filenames2, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(),
+                   acc_metric_delta.result(),
+                   loss_mse.result(), loss_mae.result(), alpha)
 
     if args.visualize_attention:
 
