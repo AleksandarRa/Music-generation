@@ -61,7 +61,7 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
 
 
-def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, interpol_len=0, sounds2=None, deltas2=None):
+def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, sounds2=None, deltas2=None):
 
     max_len = sounds.size * N_GEN_SEQ
     seq_len = sounds.size
@@ -69,20 +69,16 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1.0, alpha=0.0, inter
     i=0
     full_len = mem_len + seq_len - 1
 
-    inputs_sound = tf.constant(sounds[:, :])
-    inputs_delta = tf.constant(deltas[:, :])
+    inputs_sound = tf.constant(sounds[:, -seq_len:])
+    inputs_delta = tf.constant(deltas[:, -seq_len:])
 
-    inputs_sound2 = tf.constant(sounds2[:, :sounds.size])
-    inputs_delta2 = tf.constant(deltas2[:, :sounds.size])
-
-    outputs_sound, outputs_delta, next_mem_list, next_mem_list2, attention_weight_list, attention_loss_list = model(
+    outputs_sound, outputs_delta, next_mem_list, attention_weight_list, attention_loss_list = model(
         inputs=(inputs_sound, inputs_delta),
         mem_list=None,
-        mem_list2=None,
         next_mem_len=mem_len,
         training=False,
         alpha=alpha,
-        inputs2=(inputs_sound2, inputs_delta2)
+        inputs2=(None, None)
     )
 
     # tqdm used to output a process bar
@@ -158,7 +154,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpo
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_fullMemList_logs.csv', mode='a', newline='') as file:
+    with open('logs/interpolate_logs.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
