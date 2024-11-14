@@ -136,11 +136,12 @@ def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1, alpha=0.0, sounds2
 
     return sounds, deltas, attention_weight_list, attention_loss_list
 
-def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound, acc_metric_delta, loss_mse, loss_mae, alpha=0):
+def saveValues(npz_filenames, npz_filenames2, label, song_len, cutted_song_len, interpol_len, acc_metric_sound, acc_metric_delta, loss_mse, loss_mae, alpha=0):
 
-    values = [('filename', os.path.basename(npz_filenames[0])),
-              ('mixing filename', os.path.basename(npz_filenames2[0])),
-              ('aplha', alpha),
+    values = [('filename 1', os.path.basename(npz_filenames[0])),
+              ('filename 2', os.path.basename(npz_filenames2[0])),
+              ('label', os.path.basename(label[1])),
+              ('alpha', alpha),
               ('song length', song_len),
               ('input length', cutted_song_len),
               ('interpolation length', interpol_len),
@@ -280,12 +281,12 @@ if __name__ == '__main__':
             loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
                                                                                  out_deltas, labels_sounds,
                                                                                  labels_deltas)
-            saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
+            saveValues(npz_filenames, npz_filenames2, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
                       loss_mse.result(), loss_mae.result(), alpha)
 
             loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
                                                                                  out_deltas, labels_sounds2,
                                                                                  labels_deltas2)
-            saveValues(npz_filenames2, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(),
+            saveValues(npz_filenames, npz_filenames2, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(),
                        acc_metric_delta.result(),
                        loss_mse.result(), loss_mae.result(), alpha)
