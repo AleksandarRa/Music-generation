@@ -213,8 +213,8 @@ if __name__ == '__main__':
 
     # ============================================================
     # ============================================================
-
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('0.npz'))
+    filename = '0.npz'
+    npz_filenames = list(pathlib.Path(args.npz_dir).rglob(filename))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
@@ -244,7 +244,7 @@ if __name__ == '__main__':
 
     npz2s = ['1280.npz', '1733.npz', '1787.npz']
     for npz2 in npz2s:
-        print("0.npz with ", npz2)
+        print(f"{filename} with ", npz2)
         npz_filenames2 = list(pathlib.Path(args.npz_dir).rglob(npz2))
         assert len(npz_filenames2) > 0
         filenames_sample2 = np.random.choice(
