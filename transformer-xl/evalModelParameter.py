@@ -191,9 +191,9 @@ if __name__ == '__main__':
         model, _ = Music_transformer.build_from_config(
             config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
 
-        seq_len_list = [250, 500, 1000, 1500, 2000, 2500, 3000]
-        gen_len_list = [250, 500, 1000, 1500, 2000, 2500, 3000]
-        mem_len_list = [0, 250, 500, 1000, 1500, 2000, 2500, 3000]
+        seq_len_list = [500, 1500, 2500]
+        gen_len_list = [500, 1500, 2500]
+        mem_len_list = [0, 500, 1500, 2500]
         temp = 0.5
         for seq_len in seq_len_list:
             print("seq_len:", seq_len)
