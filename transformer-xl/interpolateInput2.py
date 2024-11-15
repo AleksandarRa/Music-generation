@@ -1,5 +1,4 @@
 import csv
-
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -8,8 +7,6 @@ import numpy as np
 import argparse
 import os
 import pathlib
-import matplotlib.pyplot as plt
-import time
 import tensorflow as tf
 import tqdm
 
@@ -187,9 +184,6 @@ if __name__ == '__main__':
     arg_parser.add_argument('-l', '--input_length', nargs='+', type=int, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
 
-    arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
-                            help='If activated, the attention weights will be saved as images')
-
 
     args = arg_parser.parse_args()
 
@@ -267,18 +261,3 @@ if __name__ == '__main__':
                                                                              labels_deltas)
         saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, acc_metric_sound.result(), acc_metric_delta.result(),
                   loss_mse.result(), loss_mae.result(), alpha)
-
-    if args.visualize_attention:
-
-        viz_dir = 'vizualized_attention'
-        pathlib.Path(viz_dir).mkdir(parents=True, exist_ok=True)
-
-        for layer_idx, layer_weights in enumerate(attention_weight_list, 1):
-            for head_idx, head_weights in enumerate(layer_weights[0, ...].numpy(), 1):
-
-                img_path = os.path.join(
-                    viz_dir, f'layer{layer_idx}_head{head_idx}.png')
-                plt.figure(figsize=(17, 14))
-                plt.step(np.arange(head_weights.shape[1]), head_weights[0])
-                #plt.imsave(img_path, head_weights, cmap='Reds')
-                plt.savefig(img_path)
