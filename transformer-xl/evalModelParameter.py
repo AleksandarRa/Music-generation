@@ -69,8 +69,7 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
         inputs=(inputs_sound, inputs_delta),
         mem_list=None,
         next_mem_len=mem_len,
-        training=False,
-        inputs2=(None, None)
+        training=False
     )
 
     # tqdm used to output a process bar
@@ -116,8 +115,7 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
             inputs=(inputs_sound, inputs_delta),
             mem_list=next_mem_list,
             next_mem_len=mem_len,
-            training=False,
-            inputs2=(None, None)
+            training=False
         )
 
     sounds = sounds[:, seq_len:]
