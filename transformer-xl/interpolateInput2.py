@@ -1,5 +1,4 @@
 import csv
-
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -8,8 +7,6 @@ import numpy as np
 import argparse
 import os
 import pathlib
-import matplotlib.pyplot as plt
-import time
 import tensorflow as tf
 import tqdm
 
@@ -224,7 +221,7 @@ if __name__ == '__main__':
 
     idx_to_time = get_quant_time()
 
-    tf.config.run_functions_eagerly(True)
+    tf.config.run_functions_eagerly(False)
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
     model, _ = Music_transformer.build_from_config(
         config=config, checkpoint_path=args.checkpoint_path)
