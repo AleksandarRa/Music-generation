@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
         seq_len_list = [500, 1500, 2500]
         gen_len_list = [500, 1500, 2500]
-        mem_len_list = [0, 500, 1500, 2500]
+        mem_len_list = [0, 1500, 2500]
         temp = 0.5
         for seq_len in seq_len_list:
             print("-seq_len:", seq_len)
