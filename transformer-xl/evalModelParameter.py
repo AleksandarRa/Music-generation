@@ -1,6 +1,4 @@
 import csv
-
-from config_music import seq_len
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -9,8 +7,6 @@ import numpy as np
 import argparse
 import os
 import pathlib
-import matplotlib.pyplot as plt
-import time
 import tensorflow as tf
 import tqdm
 
