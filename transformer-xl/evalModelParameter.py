@@ -62,7 +62,6 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
 
     max_len = gen_len
     i=0
-    alpha = 0
     inputs_sound = tf.constant(sounds[:, -seq_len:])
     inputs_delta = tf.constant(deltas[:, -seq_len:])
 
@@ -71,7 +70,6 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
         mem_list=None,
         next_mem_len=mem_len,
         training=False,
-        alpha=alpha,
         inputs2=(None, None)
     )
 
@@ -119,7 +117,6 @@ def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top
             mem_list=next_mem_list,
             next_mem_len=mem_len,
             training=False,
-            alpha=alpha,
             inputs2=(None, None)
         )
 
@@ -169,7 +166,7 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    filenames_npz =['1733.npz', '1787.npz', '1280.npz']
+    filenames_npz =['1787.npz', '1280.npz']
     for filename_npz in filenames_npz:
         print("filename:", filename_npz)
         npz_filenames = list(pathlib.Path("data/npz_temp").rglob(filename_npz))
@@ -196,20 +193,20 @@ if __name__ == '__main__':
         mem_len_list = [0, 500, 1500, 2500]
         temp = 0.5
         for seq_len in seq_len_list:
-            print("seq_len:", seq_len)
+            print("-seq_len:", seq_len)
 
             sounds = np.array([sound[:seq_len] for sound in soundsAll])
             deltas = np.array([delta[:seq_len] for delta in deltasAll])
 
             for gen_len in gen_len_list:
-                print("gen_len:", gen_len)
+                print("--gen_len:", gen_len)
                 labels_sounds = np.array(
                     [sound[seq_len:seq_len + gen_len] for sound in soundsAll])
                 labels_deltas = np.array(
                     [delta[seq_len:seq_len + gen_len] for delta in deltasAll])
 
                 for mem_len in mem_len_list:
-                    print("mem_len:", mem_len)
+                    print("---mem_len:", mem_len)
                     # compute the output of the whole song with the first 25% of the song
                     out_sounds, out_deltas, attention_loss_list, attention_weight_list, _ = generate(model=model,
                                                                                              sounds=sounds,
