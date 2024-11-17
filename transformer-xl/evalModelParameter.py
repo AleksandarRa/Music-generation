@@ -163,11 +163,15 @@ if __name__ == '__main__':
 
     # ============================================================
     # ============================================================
+    # Generate a unique set of random numbers from 0 to 8889
+    unique_random_numbers = np.random.choice(range(8890), size=50, replace=False)  # Adjust size as needed
 
-    filenames_npz =['1787.npz', '1280.npz']
+    # Convert each number to a string and append ".npz"
+    filenames_npz = [f"{num}.npz" for num in unique_random_numbers]
+
     for filename_npz in filenames_npz:
         print("filename:", filename_npz)
-        npz_filenames = list(pathlib.Path("data/npz_temp").rglob(filename_npz))
+        npz_filenames = list(pathlib.Path("data/npz").rglob(filename_npz))
         assert len(npz_filenames) > 0
         filenames_sample = np.random.choice(
             npz_filenames, args.n_songs, replace=False)
@@ -182,13 +186,18 @@ if __name__ == '__main__':
         soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
                                      for filename in filenames_sample])
         song_len = soundsAll[0].shape[0]
+        if song_len < 3000:
+            continue
 
         model, _ = Music_transformer.build_from_config(
             config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
 
-        seq_len_list = [500, 1500, 2500]
-        gen_len_list = [500, 1500, 2500]
-        mem_len_list = [0, 1500, 2500]
+        #seq_len_list = [500, 1500, 2500]
+        #gen_len_list = [500, 1500, 2500]
+        #mem_len_list = [0, 1500, 2500]
+        seq_len_list = [1500]
+        gen_len_list = [1500]
+        mem_len_list = [1500]
         temp = 0.5
         for seq_len in seq_len_list:
             print("-seq_len:", seq_len)
