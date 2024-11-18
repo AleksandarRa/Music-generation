@@ -505,8 +505,8 @@ class Music_transformer(tf.keras.Model):
                                                             rel_enc_delta = rel_enc_delta)
             next_mem_list2.append(self.get_next_mem(mem_list2[self.n_layers_combined], x2, next_mem_len))
             if mem_list[self.n_layers_combined] is not None:
-                mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1 - alpha) * mem_list2[self.n_layers_combined]
-            x = alpha * x + (1 - alpha) * x2
+                mem_list[self.n_layers_combined] = (1-alpha) * mem_list[self.n_layers_combined] + alpha * mem_list2[self.n_layers_combined]
+            x = (1-alpha) * x + alpha * x2
         else:
             next_mem_list2 = next_mem_list
 
