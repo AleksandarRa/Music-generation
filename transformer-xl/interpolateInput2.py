@@ -167,7 +167,7 @@ if __name__ == '__main__':
                             help = 'Path to the saved weights',
                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
 
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
@@ -177,9 +177,6 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-t', '--temp', type=float, default=0.5,
                             help='Temperature of softmax')
-
-    arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
-                            help='Names of the generated midis. Length must be equal to n_songs')
 
     arg_parser.add_argument('-l', '--input_length', nargs='+', type=int, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
@@ -202,19 +199,11 @@ if __name__ == '__main__':
     assert args.top_k > 0
     assert isinstance(args.temp, float)
     assert args.temp > 0.0
-    if args.filenames is None:
-        midi_filenames = [str(i)+"_interpolateInput" for i in range(1, args.n_songs + 1)]
-    else:
-        midi_filenames = args.filenames
-    midi_filenames = [f + '.midi' for f in midi_filenames]
-    midi_filenames = [os.path.join(args.dst_dir, f) for f in midi_filenames]
-    assert len(midi_filenames) == args.n_songs
-    assert len(set(midi_filenames)) == len(midi_filenames)
 
     # ============================================================
     # ============================================================
-    filename = '0.npz'
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob(filename))
+    npz1 = '0.npz'
+    npz_filenames = list(pathlib.Path(args.npz_dir).rglob(npz1))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
@@ -233,18 +222,19 @@ if __name__ == '__main__':
     cutted_song_len = 1500
     interpol_len = cutted_song_len
 
+    if args.input_length is not None:
+        cutted_song_len = args.input_length[0]
+
     sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
     deltas = np.array([delta[:cutted_song_len] for delta in deltasAll])
 
     labels_sounds = np.array([sound[cutted_song_len:cutted_song_len * (N_GEN_SEQ + 1)] for sound in soundsAll])
     labels_deltas = np.array([delta[cutted_song_len:cutted_song_len * (N_GEN_SEQ + 1)] for delta in deltasAll])
 
-    if args.input_length is not None:
-        cutted_song_len = args.input_length[0]
 
-    npz2s = ['1280.npz', '1733.npz', '1787.npz']
+    npz2s = ['138.npz', '341.npz', '255.npz']
     for npz2 in npz2s:
-        print(f"{filename} with ", npz2)
+        print(f"{npz1} with ", npz2)
         npz_filenames2 = list(pathlib.Path(args.npz_dir).rglob(npz2))
         assert len(npz_filenames2) > 0
         filenames_sample2 = np.random.choice(
@@ -287,3 +277,12 @@ if __name__ == '__main__':
             saveValues(npz_filenames, npz_filenames2, npz_filenames2, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(),
                        acc_metric_delta.result(),
                        loss_mse.result(), loss_mae.result(), alpha)
+
+            midi_list = [midi_parser.features_to_midi(
+                sound, delta) for sound, delta in zip(out_sounds, out_deltas)]
+
+            midi_filenames = np.array([npz1 + " -" + npz2])
+            alphaStr = str(alpha).replace('.', '_')
+            for midi, filename in zip(midi_list, midi_filenames):
+                midi.save("data/generated_midis/twoSongs/" + filename + "_alpha" + alphaStr + ".midi")
+
