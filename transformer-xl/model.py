@@ -501,8 +501,8 @@ class Music_transformer(tf.keras.Model):
                                                             rel_enc_delta = rel_enc_delta)
             x2=output[:,-1,:]
             mem2=output[:,:-1,:]
-            mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1 - alpha) * mem2
-            x = (1-alpha) * x + alpha * x2
+            mem_list[self.n_layers_combined] = alpha * mem_list[self.n_layers_combined] + (1-alpha) * mem2
+            x = alpha * x + (1-alpha) * x2
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
