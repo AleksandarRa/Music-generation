@@ -158,7 +158,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpo
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_fullMemList_logs.csv', mode='a', newline='') as file:
+    with open('logs/interpolate_fullMemList.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
