@@ -498,7 +498,7 @@ class Music_transformer(tf.keras.Model):
                                                             mask = mask, training = training,
                                                             rel_enc_sound = rel_enc_sound,
                                                             rel_enc_delta = rel_enc_delta)
-            x = (1-alpha) * x + alpha * x2
+            x = alpha * x + (1-alpha) * x2
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
