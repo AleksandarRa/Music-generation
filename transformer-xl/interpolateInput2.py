@@ -176,7 +176,7 @@ if __name__ == '__main__':
                             help = 'Path to the saved weights',
                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
 
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
@@ -223,7 +223,8 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob('0.npz'))
+    file = '0.npz'
+    npz_filenames = list(pathlib.Path(args.npz_dir).rglob(file))
     assert len(npz_filenames) > 0
     filenames_sample = np.random.choice(
         npz_filenames, args.n_songs, replace=False)
@@ -242,7 +243,7 @@ if __name__ == '__main__':
 
 
     song_len = soundsAll[0].shape[0]
-    cutted_song_len = int(song_len / 4)
+    cutted_song_len = 1500
     interpol_len = cutted_song_len
 
     if args.input_length is not None:
@@ -279,17 +280,10 @@ if __name__ == '__main__':
         saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
                   loss_mse.result(), loss_mae.result(), alpha)
 
-    if args.visualize_attention:
+        midi_list = [midi_parser.features_to_midi(
+            sound, delta) for sound, delta in zip(out_sounds, out_deltas)]
 
-        viz_dir = 'vizualized_attention'
-        pathlib.Path(viz_dir).mkdir(parents=True, exist_ok=True)
-
-        for layer_idx, layer_weights in enumerate(attention_weight_list, 1):
-            for head_idx, head_weights in enumerate(layer_weights[0, ...].numpy(), 1):
-
-                img_path = os.path.join(
-                    viz_dir, f'layer{layer_idx}_head{head_idx}.png')
-                plt.figure(figsize=(17, 14))
-                plt.step(np.arange(head_weights.shape[1]), head_weights[0])
-                #plt.imsave(img_path, head_weights, cmap='Reds')
-                plt.savefig(img_path)
+        midi_filenames = np.array([file])
+        alphaStr = str(alpha).replace('.', '_')
+        for midi, filename in zip(midi_list, midi_filenames):
+            midi.save("data/generated_midis/interpolateOneSong/" + filename + "_alpha" + alphaStr + ".midi")
