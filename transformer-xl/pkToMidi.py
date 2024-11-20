@@ -14,12 +14,10 @@ with open(file_path, 'rb') as f:
     allData = pickle.load(f)
 
 # Now 'data' contains the loaded object (it could be a dictionary, list, etc.)
-# print(allData)
 
 idx_to_time = get_quant_time()
 midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
 # Assuming data is a dictionary with MIDI bytes
-#allData = allData[0000]
 for midi_data in allData:
     midi_name = midi_data['name']
     midi_composer = midi_data['composer']
