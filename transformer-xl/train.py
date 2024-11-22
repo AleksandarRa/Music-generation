@@ -201,13 +201,13 @@ if __name__ == '__main__':
 
             # training for this batch is over
 
-            values = [('epoch', epoch),
+            values = [('epoch', EPOCHS + epoch),
                       ('acc_sound', acc_metric_sound.result()),
                       ('acc_delta', acc_metric_delta.result()),
                       ('loss', loss_metric.result())]
 
         # Open the file in append mode and write the values
-        with open('logs/transformerXL_logs.csv', mode='a', newline='') as file:
+        with open('logs/training.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
             # Write the values as a row
             # writer.writerow([name for name, result in values])  # Headers (Optional)
