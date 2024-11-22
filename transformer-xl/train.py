@@ -144,6 +144,8 @@ if __name__ == '__main__':
     for epoch in range(1, n_epochs + 1):
 
         print(f"\nEpoch {epoch}/{n_epochs}")
+        progress_bar = tf.keras.utils.Progbar(batches_per_epoch, stateful_metrics=[
+            'acc_sound', 'acc_delta', 'loss'])
 
         loss_metric.reset_state()
         acc_metric_sound.reset_state()
@@ -205,7 +207,7 @@ if __name__ == '__main__':
                       ('acc_sound', acc_metric_sound.result()),
                       ('acc_delta', acc_metric_delta.result()),
                       ('loss', loss_metric.result())]
-
+            progress_bar.add(1, values=values)
         # Open the file in append mode and write the values
         with open('logs/training.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
