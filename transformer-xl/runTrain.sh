@@ -9,6 +9,6 @@
 #SBATCH --mem-per-cpu=2000
 
 sleep 5
-/home2/aradovic/miniconda3/envs/myenv/bin/python /home2/aradovic/Music-generation/transformer-xl/train.py
+/home2/aradovic/miniconda3/envs/a6000env/bin/python /home2/aradovic/Music-generation/transformer-xl/train.py
 
 exit
