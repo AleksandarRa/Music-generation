@@ -137,7 +137,7 @@ def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_met
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/analyseParameters.csv', mode='a', newline='') as file:
+    with open('logs/analyseParametersRandom.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -192,9 +192,6 @@ if __name__ == '__main__':
         model, _ = Music_transformer.build_from_config(
             config=config, checkpoint_path=args.checkpoint_path, max_seq_len=song_len)
 
-        #seq_len_list = [500, 1500, 2500]
-        #gen_len_list = [500, 1500, 2500]
-        #mem_len_list = [0, 1500, 2500]
         seq_len_list = [1500]
         gen_len_list = [1500]
         mem_len_list = [1500]
