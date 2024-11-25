@@ -163,7 +163,7 @@ if __name__ == '__main__':
 
     # ============================================================
     # ============================================================
-    filenames_npz = ['0.npz']
+    filenames_npz = ['0.npz', '11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz']
     for filename_npz in filenames_npz:
         print("filename:", filename_npz)
         npz_filenames = list(pathlib.Path("data/npz").rglob(filename_npz))
