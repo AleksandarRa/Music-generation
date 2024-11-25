@@ -16,10 +16,10 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
                             help='Directory where the npz files are stored')
 
-    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='data/checkpoints_music',
+    arg_parser.add_argument('-c', '--checkpoint_dir', type=str, default='data/checkpoints_music/finetune',
                             help='Directory where the saved weights will be stored')
 
     arg_parser.add_argument('-p', '--checkpoint_period', type=int, default=1,
@@ -29,7 +29,7 @@ if __name__ == '__main__':
                             help='Number of dataset files to take into account (default: all)')
 
     arg_parser.add_argument('-w', '--weights', type=str,
-            default=None, help='Path to saved model weights')
+            default='data/checkpoints_music/checkpoint500.weights.h5', help='Path to saved model weights')
 
     arg_parser.add_argument('-o', '--optimizer', type=str,
                             default=None, help='Path to saved optimizer weights')
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     assert batches_per_epoch > 0
     print(f'Created dataset with {batches_per_epoch} batches per epoch')
 
-    model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=args.weights,
+    model, optimizer = Music_transformer.build_from_config(config=config, checkpoint_path=None,
                                                            optimizer_path=args.optimizer)
 
     loss_metric = tf.keras.metrics.Mean(name='loss')
@@ -218,7 +218,7 @@ if __name__ == '__main__':
 
         if epoch % args.checkpoint_period == 0:
             checkpoint_path = os.path.join(
-                args.checkpoint_dir, f'checkpoint{epoch+EPOCHS}.weights.h5')
+                args.checkpoint_dir, f'finetunecheckpoint{epoch+EPOCHS}.weights.h5')
             model.save_weights(checkpoint_path)
 
             #optimizer_path = os.path.join(
