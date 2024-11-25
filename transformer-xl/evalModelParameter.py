@@ -10,7 +10,7 @@ import pathlib
 import tensorflow as tf
 import tqdm
 
-CHECKPOINT_EPOCH = 80
+CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
