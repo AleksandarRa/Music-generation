@@ -40,9 +40,9 @@ n_layers_combined = 6
 seq_len = 256
 mem_len = 384
 
-batch_size = 7
+batch_size = 1
 dropout_rate = 0.1
-n_epochs = 500
+n_epochs = 100
 max_segs_per_batch = 20
 lr = 0.00002
 
