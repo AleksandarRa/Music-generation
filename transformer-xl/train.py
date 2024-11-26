@@ -209,7 +209,7 @@ if __name__ == '__main__':
                       ('loss', loss_metric.result())]
             progress_bar.add(1, values=values)
         # Open the file in append mode and write the values
-        with open('logs/finetuned/finetuneTraining.csv', mode='a', newline='') as file:
+        with open('logs/finetune/finetuneTraining.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
             # Write the values as a row
             # writer.writerow([name for name, result in values])  # Headers (Optional)
