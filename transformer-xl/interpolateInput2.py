@@ -167,7 +167,7 @@ if __name__ == '__main__':
                             help = 'Path to the saved weights',
                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
 
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
