@@ -448,7 +448,7 @@ class Music_transformer(tf.keras.Model):
         concat_output = tf.concat((sounds, deltas), axis=-1)
         return concat_output, next_mem_list, attention_weight_list, attention_loss_list
 
-    def call(self, inputs, mem_list, next_mem_len, training, mem_list2=None,  alpha=0.0, inputs2=None):
+    def call(self, inputs, mem_list, next_mem_len, training, mem_list2=None,  alpha=0.0, inputs2=(None, None)):
 
         # sounds -> (batch_size, seq_len)
         # deltas -> (batch_size, seq_len)
@@ -494,16 +494,17 @@ class Music_transformer(tf.keras.Model):
                                                                                                   rel_enc_sound=rel_enc_sound,
                                                                                                   rel_enc_delta=rel_enc_delta)
         # evaluating process
-        sounds2, deltas2 = inputs2
-        x2, next_mem_list2, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
-                                                        mem_list = mem_list2, next_mem_len = next_mem_len,
-                                                        mask = mask, training = training,
-                                                        rel_enc_sound = rel_enc_sound,
-                                                        rel_enc_delta = rel_enc_delta)
-        next_mem_list2.append(self.get_next_mem(mem_list2[self.n_layers_combined], x2, next_mem_len))
-        if mem_list[self.n_layers_combined] is not None:
-            mem_list[self.n_layers_combined] = (1-alpha) * mem_list[self.n_layers_combined] + alpha * mem_list2[self.n_layers_combined]
-        x = (1-alpha) * x + alpha * x2
+        if alpha != 0.0:
+            sounds2, deltas2 = inputs2
+            x2, next_mem_list2, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
+                                                            mem_list = mem_list2, next_mem_len = next_mem_len,
+                                                            mask = mask, training = training,
+                                                            rel_enc_sound = rel_enc_sound,
+                                                            rel_enc_delta = rel_enc_delta)
+            next_mem_list2.append(self.get_next_mem(mem_list2[self.n_layers_combined], x2, next_mem_len))
+            if mem_list[self.n_layers_combined] is not None:
+                mem_list[self.n_layers_combined] = (1-alpha) * mem_list[self.n_layers_combined] + alpha * mem_list2[self.n_layers_combined]
+            x = (1-alpha) * x + alpha * x2
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
