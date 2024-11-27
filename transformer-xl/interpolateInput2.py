@@ -221,6 +221,13 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
+    idx_to_time = get_quant_time()
+
+    tf.config.run_functions_eagerly(False)
+    midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
+    model, _ = Music_transformer.build_from_config(
+        config=config, checkpoint_path=args.checkpoint_path)
+
     npz_list = ['11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz', '774.npz']
     for npz_element in npz_list:
         print("filename: ", npz_element)
@@ -229,12 +236,6 @@ if __name__ == '__main__':
         filenames_sample = np.random.choice(
             npz_filenames, args.n_songs, replace=False)
 
-        idx_to_time = get_quant_time()
-
-        tf.config.run_functions_eagerly(False)
-        midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
-        model, _ = Music_transformer.build_from_config(
-            config=config, checkpoint_path=args.checkpoint_path)
 
 
         batch_size = len(filenames_sample)
