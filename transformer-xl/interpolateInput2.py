@@ -8,12 +8,10 @@ import numpy as np
 import argparse
 import os
 import pathlib
-import matplotlib.pyplot as plt
-import time
 import tensorflow as tf
 import tqdm
 
-CHECKPOINT_EPOCH = 80
+CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
@@ -158,7 +156,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpo
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_fullMemList.csv', mode='a', newline='') as file:
+    with open('logs/500epochs/interpolate_fullMemList.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -176,7 +174,7 @@ if __name__ == '__main__':
                             help = 'Path to the saved weights',
                             default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
                             help='Directory with the npz files')
 
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
@@ -223,67 +221,68 @@ if __name__ == '__main__':
     # ============================================================
     # ============================================================
 
-    file = '0.npz'
-    npz_filenames = list(pathlib.Path(args.npz_dir).rglob(file))
-    assert len(npz_filenames) > 0
-    filenames_sample = np.random.choice(
-        npz_filenames, args.n_songs, replace=False)
+    npz_list = ['11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz', '774.npz']
+    for npz_element in npz_list:
+        npz_filenames = list(pathlib.Path(args.npz_dir).rglob(npz_element))
+        assert len(npz_filenames) > 0
+        filenames_sample = np.random.choice(
+            npz_filenames, args.n_songs, replace=False)
 
-    idx_to_time = get_quant_time()
+        idx_to_time = get_quant_time()
 
-    tf.config.run_functions_eagerly(False)
-    midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
-    model, _ = Music_transformer.build_from_config(
-        config=config, checkpoint_path=args.checkpoint_path)
-
-
-    batch_size = len(filenames_sample)
-    soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
-                                 for filename in filenames_sample])
+        tf.config.run_functions_eagerly(False)
+        midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
+        model, _ = Music_transformer.build_from_config(
+            config=config, checkpoint_path=args.checkpoint_path)
 
 
-    song_len = soundsAll[0].shape[0]
-    cutted_song_len = 1500
-    interpol_len = cutted_song_len
+        batch_size = len(filenames_sample)
+        soundsAll, deltasAll = zip(*[midi_parser.load_features(filename)
+                                     for filename in filenames_sample])
 
-    if args.input_length is not None:
-        cutted_song_len = args.input_length[0]
 
-    sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
-    deltas = np.array([delta[:cutted_song_len] for delta in deltasAll])
+        song_len = soundsAll[0].shape[0]
+        cutted_song_len = 1500
+        interpol_len = cutted_song_len
 
-    labels_sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    labels_deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+        if args.input_length is not None:
+            cutted_song_len = args.input_length[0]
 
-    sounds2 = np.array([sound[:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
-    deltas2 = np.array([delta[:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
+        sounds = np.array([sound[:cutted_song_len] for sound in soundsAll])
+        deltas = np.array([delta[:cutted_song_len] for delta in deltasAll])
 
-    alphas = np.linspace(0,1,11)
-    for alpha in alphas:
-        print("alpha:", alpha)
+        labels_sounds = np.array([sound[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
+        labels_deltas = np.array([delta[cutted_song_len:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
 
-        # compute the output of the whole song with the first 25% of the song
-        out_sounds, out_deltas, attention_loss_list, attention_weight_list = generate(model=model,
-                                                                                 sounds=sounds,
-                                                                                 deltas=deltas,
-                                                                                 pad_idx=config.pad_idx,
-                                                                                 top_k=args.top_k,
-                                                                                 temp=args.temp,
-                                                                                 alpha=alpha,
-                                                                                 interpol_len=interpol_len,
-                                                                                 sounds2=sounds2,
-                                                                                 deltas2=deltas2)
+        sounds2 = np.array([sound[:cutted_song_len*(N_GEN_SEQ+1)] for sound in soundsAll])
+        deltas2 = np.array([delta[:cutted_song_len*(N_GEN_SEQ+1)] for delta in deltasAll])
 
-        loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
-                                                                             out_deltas, labels_sounds,
-                                                                             labels_deltas)
-        saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
-                  loss_mse.result(), loss_mae.result(), alpha)
+        alphas = np.linspace(0,1,11)
+        for alpha in alphas:
+            print("alpha:", alpha)
 
-        midi_list = [midi_parser.features_to_midi(
-            sound, delta) for sound, delta in zip(out_sounds, out_deltas)]
+            # compute the output of the whole song with the first 25% of the song
+            out_sounds, out_deltas, attention_loss_list, attention_weight_list = generate(model=model,
+                                                                                     sounds=sounds,
+                                                                                     deltas=deltas,
+                                                                                     pad_idx=config.pad_idx,
+                                                                                     top_k=args.top_k,
+                                                                                     temp=args.temp,
+                                                                                     alpha=alpha,
+                                                                                     interpol_len=interpol_len,
+                                                                                     sounds2=sounds2,
+                                                                                     deltas2=deltas2)
 
-        midi_filenames = np.array([file])
-        alphaStr = str(alpha).replace('.', '_')
-        for midi, filename in zip(midi_list, midi_filenames):
-            midi.save("data/generated_midis/interpolateOneSong/" + filename + "_alpha" + alphaStr + ".midi")
+            loss_mse, loss_mae, acc_metric_sound, acc_metric_delta = computeLoss(model, out_sounds,
+                                                                                 out_deltas, labels_sounds,
+                                                                                 labels_deltas)
+            saveValues(npz_filenames, npz_filenames, song_len, cutted_song_len, interpol_len, acc_metric_sound.result(), acc_metric_delta.result(),
+                      loss_mse.result(), loss_mae.result(), alpha)
+
+            midi_list = [midi_parser.features_to_midi(
+                sound, delta) for sound, delta in zip(out_sounds, out_deltas)]
+
+            midi_filenames = np.array([npz_element])
+            alphaStr = str(alpha).replace('.', '_')
+            for midi, filename in zip(midi_list, midi_filenames):
+                midi.save("data/generated_midis/interpolateOneSong/500epochs/withMemList/" + filename + "_alpha" + alphaStr + ".midi")
