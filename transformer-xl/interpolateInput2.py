@@ -223,6 +223,7 @@ if __name__ == '__main__':
 
     npz_list = ['11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz', '774.npz']
     for npz_element in npz_list:
+        print("filename: ", npz_element)
         npz_filenames = list(pathlib.Path(args.npz_dir).rglob(npz_element))
         assert len(npz_filenames) > 0
         filenames_sample = np.random.choice(
