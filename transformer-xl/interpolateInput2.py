@@ -236,9 +236,8 @@ if __name__ == '__main__':
         for npz2 in npz_list:
             if npz1 == npz2:
                 continue
-            if npz1 in npz_finish:
+            if npz2 in npz_finish:
                 continue
-
             print(f"{npz1} with ", npz2)
             npz_filenames2 = list(pathlib.Path(args.npz_dir).rglob(npz2))
             assert len(npz_filenames2) > 0
