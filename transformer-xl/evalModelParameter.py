@@ -1,4 +1,6 @@
 import csv
+
+from evaluateModel import CHECKPOINT_PATH
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -12,7 +14,8 @@ import tqdm
 
 CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
-
+CSV_PATH = 'logs/'+str(CHECKPOINT_EPOCH)+'epochs/analyseParameters'+str(CHECKPOINT_EPOCH)+'Epochs.csv'
+CHECKPOINT_PATH = 'data/checkpoints/'+str(CHECKPOINT_EPOCH)+'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
     loss_metric_mse = tf.keras.metrics.Mean(name='loss')
@@ -56,7 +59,6 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     acc_metric_delta.update_state(labels_delta, logits_delta)
 
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
-
 
 def generate(model, sounds, deltas, pad_idx, seq_len, mem_len, gen_len,temp, top_k=1):
 
@@ -137,7 +139,7 @@ def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_met
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/analyseParameters.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -153,11 +155,10 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
     arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
-
 
     args = arg_parser.parse_args()
 
