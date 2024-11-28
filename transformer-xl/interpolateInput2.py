@@ -12,6 +12,7 @@ import pathlib
 import tensorflow as tf
 import tqdm
 
+N_GEN_SEQ = 1
 CHECKPOINT_EPOCH = 500
 CHECKPOINT_PATH = 'data/checkpoints_music/' + str(CHECKPOINT_EPOCH) +'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
 CSV_PATH = 'logs/'+ str(CHECKPOINT_EPOCH) + 'epochs/interpolate_only_generated_output'+str(CHECKPOINT_EPOCH) + 'Epochs.csv'
