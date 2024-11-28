@@ -31,3 +31,5 @@ transformer-xl/maestro/
 transformer-xl/datasets/
 transformer-xl/generated_midis_gitRepo/text/
 transformer-xl/gpuLogs/
+transformer-xl/logs/*
+transformer-xl/nodes/*
