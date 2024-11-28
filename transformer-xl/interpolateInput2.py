@@ -1,4 +1,6 @@
 import csv
+
+from evaluateModel import CHECKPOINT_PATH, CHECKPOINT_EPOCH
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -11,7 +13,7 @@ import tensorflow as tf
 import tqdm
 
 CHECKPOINT_EPOCH = 500
-N_GEN_SEQ = 1
+CHECKPOINT_PATH = 'data/checkpoints_music/' + str(CHECKPOINT_EPOCH) +'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
 CSV_PATH = 'logs/'+ str(CHECKPOINT_EPOCH) + 'epochs/interpolate_only_generated_output'+str(CHECKPOINT_EPOCH) + 'Epochs.csv'
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
@@ -166,7 +168,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
