@@ -24,12 +24,10 @@ LSTM_project/mel.mscz
 
 # transformer-XL project
 transformer-xl/.idea/*
-transformer-xl/npz_music/*
-transformer-xl/generated_samples/
-transformer-xl/data/
-transformer-xl/maestro/
-transformer-xl/datasets/
-transformer-xl/generated_midis_gitRepo/text/
-transformer-xl/gpuLogs/
-transformer-xl/logs/*
+transformer-xl/data/cutted_midi
+transformer-xl/data/midi_temp
+transformer-xl/data/midis
+transformer-xl/data/oldnpz
 transformer-xl/nodes/*
+transformer-xl/logs/old
+transformer-xl/logs/smallDataset
