@@ -13,6 +13,8 @@ import tqdm
 
 CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
+CHECKPOINT_PATH = 'data/checkpoints_music/' + str(CHECKPOINT_EPOCH) +'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
+CSV_PATH = 'logs/'+ str(CHECKPOINT_EPOCH) + 'epochs/interpolate_fullMemList'+str(CHECKPOINT_EPOCH) + 'Epochs.csv'
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
@@ -156,7 +158,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, interpo
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/500epochs/interpolate_fullMemList.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -172,9 +174,9 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
-    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz_temp',
+    arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
 
     arg_parser.add_argument('-o', '--dst_dir', type=str, default='data/generated_midis',
@@ -228,7 +230,7 @@ if __name__ == '__main__':
     model, _ = Music_transformer.build_from_config(
         config=config, checkpoint_path=args.checkpoint_path)
 
-    npz_list = ['11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz', '774.npz']
+    npz_list = ['138.npz', '341.npz', '255.npz', '0.npz', '1.npz']
     for npz_element in npz_list:
         print("filename: ", npz_element)
         npz_filenames = list(pathlib.Path(args.npz_dir).rglob(npz_element))
