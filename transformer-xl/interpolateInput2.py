@@ -12,6 +12,7 @@ import tqdm
 
 CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
+CSV_PATH = 'logs/'+ str(CHECKPOINT_EPOCH) + 'epochs/interpolate_only_generated_output'+str(CHECKPOINT_EPOCH) + 'Epochs.csv'
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
@@ -149,7 +150,7 @@ def saveValues(npz_filenames, npz_filenames2, song_len, cutted_song_len, acc_met
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/500epochs/interpolate_only_generated_output.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -217,7 +218,7 @@ if __name__ == '__main__':
 
     # ============================================================
     # ============================================================
-    npz_list = ['11.npz', '138.npz', '187.npz', '255.npz', '341.npz', '346.npz', '774.npz']
+    npz_list = ['138.npz', '341.npz', '255.npz', '346.npz']
     for npz_element in npz_list:
         print('filename: ', npz_element)
         npz_filenames = list(pathlib.Path(args.npz_dir).rglob(npz_element))
