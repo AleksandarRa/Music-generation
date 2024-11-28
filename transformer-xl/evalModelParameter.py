@@ -1,4 +1,6 @@
 import csv
+
+from generate_music import CHECKPOINT_EPOCH
 from midi_parser import MIDI_parser
 from model import Music_transformer
 import config_music as config
@@ -12,6 +14,8 @@ import tqdm
 
 CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
+CSV_PATH = 'logs/'+str(CHECKPOINT_EPOCH)+'epochs/analyseParametersRandom'+str(CHECKPOINT_EPOCH)+'Epochs.csv'
+CHECKPOINT_PATH = 'data/checkpoints_music/' + str(CHECKPOINT_EPOCH) + 'epochs/checkpoint' + str(CHECKPOINT_EPOCH) +'.weights.h5'
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
@@ -127,7 +131,7 @@ def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_met
 
     values = [('filename', os.path.basename(npz_filenames[0])),
               ('song length', song_len),
-              ('seq_len', seq_len ),
+              ('seq_len', seq_len),
               ('gen_len', gen_len),
               ('mem_len', mem_len),
               ('temp', temp),
@@ -137,7 +141,7 @@ def saveValues(npz_filenames, song_len, seq_len, gen_len, mem_len, temp, acc_met
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/analyseParametersRandom.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         #writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -153,7 +157,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
     arg_parser.add_argument('-f', '--filenames', nargs='+', type=str, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
@@ -168,6 +172,7 @@ if __name__ == '__main__':
 
     # Convert each number to a string and append ".npz"
     filenames_npz = [f"{num}.npz" for num in unique_random_numbers]
+    filenames_npz = ['346.npz', '341.npz']
 
     for filename_npz in filenames_npz:
         print("filename:", filename_npz)
