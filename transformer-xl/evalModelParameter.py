@@ -15,7 +15,7 @@ import tqdm
 CHECKPOINT_EPOCH = 500
 N_GEN_SEQ = 1
 CSV_PATH = 'logs/'+str(CHECKPOINT_EPOCH)+'epochs/analyseParameters'+str(CHECKPOINT_EPOCH)+'Epochs.csv'
-CHECKPOINT_PATH = 'data/checkpoints/'+str(CHECKPOINT_EPOCH)+'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
+CHECKPOINT_PATH = 'data/checkpoints_music/'+str(CHECKPOINT_EPOCH)+'epochs/checkpoint'+str(CHECKPOINT_EPOCH)+'.weights.h5'
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
     loss_metric_mse = tf.keras.metrics.Mean(name='loss')
