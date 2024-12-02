@@ -11,7 +11,9 @@ import tensorflow as tf
 import tqdm
 
 CHECKPOINT_EPOCH = 500
+CHECKPOINT_PATH = f"data/checkpoints_music/{CHECKPOINT_EPOCH}epochs/checkpoint{CHECKPOINT_EPOCH}.weights.h5"
 N_GEN_SEQ = 1
+CSV_PATH = f"logs/{CHECKPOINT_EPOCH}epochs/interpolate_two_songs_fullTransformer.csv"
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
 
@@ -56,7 +58,6 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     acc_metric_delta.update_state(labels_delta, logits_delta)
 
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
-
 
 def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1, alpha=0.0, sounds2=None, deltas2=None):
 
@@ -149,7 +150,7 @@ def saveValues(npz_filenames, npz_filenames2, label, song_len, cutted_song_len, 
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_two_songs.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         # writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -165,7 +166,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
@@ -180,10 +181,6 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-l', '--input_length', nargs='+', type=int, default=None,
                             help='Names of the generated midis. Length must be equal to n_songs')
-
-    arg_parser.add_argument('-v', '--visualize_attention', action='store_true',
-                            help='If activated, the attention weights will be saved as images')
-
 
     args = arg_parser.parse_args()
 

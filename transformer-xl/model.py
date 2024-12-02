@@ -398,20 +398,17 @@ class Music_transformer(tf.keras.Model):
 
         return res
 
-    def transformer_seperated(self, sounds, deltas, mem_list, next_mem_len, mask, training, rel_enc_sound, rel_enc_delta):
+    def transformer_seperated(self, sounds, deltas, mem_list, next_mem_len, mask, training, rel_enc_sound, rel_enc_delta, alpha=0.0, sounds2=None, deltas2=None):
 
         next_mem_list = []
         attention_weight_list = []
         attention_loss_list = []
 
-
         sounds = self.emb_layer_sound(sounds)
         sounds = sounds * tf.math.sqrt(tf.cast(self.d_sound, tf.float32))
-        input_sound_embedded = sounds
         # sounds -> (batch_size, seq_len, d_sound)
 
         for idx, layer in enumerate(self.layer_list_sound):
-
             next_mem = self.get_next_mem(mem_list[idx], sounds, next_mem_len)
             next_mem_list.append(next_mem)
 
@@ -421,13 +418,13 @@ class Music_transformer(tf.keras.Model):
                 mask=mask,
                 rel_enc=rel_enc_sound,
                 training=training)
+
             attention_weight_list.append(attention_weights)
             attention_loss_list.append(attention_loss)
         # sounds -> (batch_size, seq_len, d_sound)
 
         deltas = self.emb_layer_delta(deltas)
         deltas = deltas * tf.math.sqrt(tf.cast(self.d_delta, tf.float32))
-        input_delta_embedded = deltas
         # deltas -> (batch_size, seq_len, delta)
 
         for idx, layer in enumerate(self.layer_list_delta, self.n_layers_sound):
@@ -445,6 +442,45 @@ class Music_transformer(tf.keras.Model):
             attention_loss_list.append(attention_loss)
         # deltas -> (batch_size, seq_len, d_delta)
 
+        if sounds2 is not None:
+            next_mem_list2 = []
+            mem_list2 = [None] * self.n_layers_total
+            sounds2 = self.emb_layer_sound(sounds2)
+            sounds2 = sounds2 * tf.math.sqrt(tf.cast(self.d_sound, tf.float32))
+            # sounds -> (batch_size, seq_len, d_sound)
+
+            for idx, layer in enumerate(self.layer_list_sound):
+                next_mem = self.get_next_mem(mem_list2[idx], sounds2, next_mem_len)
+                next_mem_list2.append(next_mem)
+
+                sounds2, attention_weights, attention_loss = layer(
+                    inputs=sounds2,
+                    mem=mem_list2[idx],
+                    mask=mask,
+                    rel_enc=rel_enc_sound,
+                    training=training)
+
+            deltas2 = self.emb_layer_delta(deltas2)
+            deltas2 = deltas2 * tf.math.sqrt(tf.cast(self.d_delta, tf.float32))
+            # deltas -> (batch_size, seq_len, delta)
+
+            for idx, layer in enumerate(self.layer_list_delta, self.n_layers_sound):
+                next_mem = self.get_next_mem(mem_list2[idx], deltas2, next_mem_len)
+                next_mem_list2.append(next_mem)
+
+                deltas2, _, _ = layer(
+                    inputs=deltas2,
+                    mem=mem_list2[idx],
+                    mask=mask,
+                    rel_enc=rel_enc_delta,
+                    training=training)
+            for idx in range(0, self.n_layers_sound+self.n_layers_delta):
+                next_mem_list[idx] = (1-alpha) * next_mem_list[idx] + alpha * next_mem_list2[idx]
+
+            sounds = (1 - alpha) * sounds + alpha * sounds2
+            deltas = (1 - alpha) * deltas + alpha * deltas2
+
+        # deltas -> (batch_size, seq_len, d_delta)
         concat_output = tf.concat((sounds, deltas), axis=-1)
         return concat_output, next_mem_list, attention_weight_list, attention_loss_list
 
@@ -485,20 +521,29 @@ class Music_transformer(tf.keras.Model):
         rel_enc_combined = tf.reverse(rel_enc_combined, axis=[0])
         # rel_enc_combined -> (full_len, d_combined)
 
-        x, next_mem_list, attention_weight_list, attention_loss_list = self.transformer_seperated(sounds=sounds, deltas=deltas,
-                                                                                                  mem_list=mem_list, next_mem_len=next_mem_len,
-                                                                                                  mask=mask, training=training,
-                                                                                                  rel_enc_sound=rel_enc_sound,
-                                                                                                  rel_enc_delta=rel_enc_delta)
         # evaluating process
         if alpha != 0.0 and not inputs2[0] is None:
             sounds2, deltas2 = inputs2
-            x2, _, _, _ = self.transformer_seperated(sounds=sounds2, deltas=deltas2,
-                                                            mem_list = [None] * self.n_layers_total, next_mem_len = next_mem_len,
-                                                            mask = mask, training = training,
-                                                            rel_enc_sound = rel_enc_sound,
-                                                            rel_enc_delta = rel_enc_delta)
-            x = (1-alpha) * x + alpha * x2
+            x, next_mem_list, attention_weight_list, attention_loss_list = self.transformer_seperated(sounds=sounds,
+                                                                                                      deltas=deltas,
+                                                                                                      mem_list=mem_list,
+                                                                                                      next_mem_len=next_mem_len,
+                                                                                                      mask=mask,
+                                                                                                      training=training,
+                                                                                                      rel_enc_sound=rel_enc_sound,
+                                                                                                      rel_enc_delta=rel_enc_delta,
+                                                                                                      alpha = alpha,
+                                                                                                      sounds2 =sounds2,
+                                                                                                      deltas2 = deltas2)
+        else:
+            x, next_mem_list, attention_weight_list, attention_loss_list = self.transformer_seperated(sounds=sounds,
+                                                                                                      deltas=deltas,
+                                                                                                      mem_list=mem_list,
+                                                                                                      next_mem_len=next_mem_len,
+                                                                                                      mask=mask,
+                                                                                                      training=training,
+                                                                                                      rel_enc_sound=rel_enc_sound,
+                                                                                                      rel_enc_delta=rel_enc_delta)
 
         for idx, layer in enumerate(self.layer_list_combined, self.n_layers_sound + self.n_layers_delta):
 
