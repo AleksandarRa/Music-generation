@@ -9,8 +9,9 @@ import os
 import pathlib
 import tensorflow as tf
 import tqdm
-
 CHECKPOINT_EPOCH = 500
+CHECKPOINT_PATH = f"data/checkpoints_music/{CHECKPOINT_EPOCH}epochs/checkpoint{CHECKPOINT_EPOCH}.weights.h5"
+CSV_PATH = f'logs/{CHECKPOINT_PATH}epochs/interpolate_two_songs{CHECKPOINT_EPOCH}epochs.csv'
 N_GEN_SEQ = 1
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
@@ -56,7 +57,6 @@ def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
     acc_metric_delta.update_state(labels_delta, logits_delta)
 
     return loss_metric_mse, loss_metric_mae, acc_metric_sound, acc_metric_delta
-
 
 def generate(model, sounds, deltas, pad_idx, top_k=1, temp=1, alpha=0.0, sounds2=None, deltas2=None):
 
@@ -149,7 +149,7 @@ def saveValues(npz_filenames, npz_filenames2, label, song_len, cutted_song_len, 
               ('loss mae', loss_mae)]
 
     # Open the file in append mode and write the values
-    with open('logs/interpolate_two_songs.csv', mode='a', newline='') as file:
+    with open(CSV_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
         # Write the values as a row
         # writer.writerow([name for name, result in values])  # Headers (Optional)
@@ -165,7 +165,7 @@ if __name__ == '__main__':
 
     arg_parser.add_argument('-c', '--checkpoint_path', type=str,
                             help = 'Path to the saved weights',
-                            default = "data/checkpoints_music/checkpoint" + str(CHECKPOINT_EPOCH) + ".weights.h5")
+                            default = CHECKPOINT_PATH)
 
     arg_parser.add_argument('-np', '--npz_dir', type=str, default='data/npz',
                             help='Directory with the npz files')
@@ -205,6 +205,13 @@ if __name__ == '__main__':
     npz_finish = []
     npz_list = ['138.npz', '255.npz', '341.npz', '346.npz']
     idx_to_time = get_quant_time()
+
+    # add header
+    headers =['filename 1', 'filename2', 'label', 'alpha', 'song length', 'input length', 'interpolation length', 'output length', 'acc_sound', 'acc_delta', 'loss mse', 'loss mae']
+    with open(CSV_PATH, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        # Write the values as a row
+        writer.writerow([header for header in headers])  # Headers (Optional)
 
     tf.config.run_functions_eagerly(False)
     midi_parser = MIDI_parser.build_from_config(config, idx_to_time)
