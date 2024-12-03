@@ -11,7 +11,7 @@ import tensorflow as tf
 import tqdm
 CHECKPOINT_EPOCH = 500
 CHECKPOINT_PATH = f"data/checkpoints_music/{CHECKPOINT_EPOCH}epochs/checkpoint{CHECKPOINT_EPOCH}.weights.h5"
-CSV_PATH = f'logs/{CHECKPOINT_PATH}epochs/interpolate_two_songs{CHECKPOINT_EPOCH}epochs.csv'
+CSV_PATH = f'logs/{CHECKPOINT_EPOCH}epochs/interpolate_two_songs{CHECKPOINT_EPOCH}epochs.csv'
 N_GEN_SEQ = 1
 
 def computeLoss(model, logits_sound, logits_delta, labels_sound, labels_delta):
