@@ -16,7 +16,7 @@ for i in range (1,5):
 
     start = 1500
     end = 3000
-    midi_filenames = [f +'npz_'+ str(start) + '-'+str(end) + '.midi' for f in file_names_array]
+    midi_filenames = [f +'npz_'+ str(start) + '-'+str(end) + '.npz' for f in file_names_array]
 
     sounds, deltas = zip(*[midi_parser.load_features(filename)
                            for filename in npz_filenames])
@@ -24,8 +24,5 @@ for i in range (1,5):
     sounds = tuple(sound[start:end] for sound in sounds)
     deltas = tuple(delta[start:end] for delta in deltas)
 
-    midi_list = [midi_parser.features_to_midi(
-        sound, delta) for sound, delta in zip(sounds, deltas)]
-
-    for midi, filename in zip(midi_list, midi_filenames):
-        midi.save("data/analysedData/"+str(i)+"approach/midi/"+str(start)+"-"+str(end)+"/"+filename)
+    for z in range (0,4):
+        np.savez("data/analysedData/"+str(i)+"approach/npz/"+str(start)+"-"+str(end)+"/"+midi_filenames[z], sounds=sounds[z], deltas=deltas[z])
