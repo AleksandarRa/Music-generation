@@ -28,7 +28,7 @@ def append_tuple_to_csv(tuple_data, output_file, columnName, filename_column = F
     new_data = pd.DataFrame({columnName[i] : arr for i, arr in enumerate(tuple_data)})
 
     if filename_column:
-        new_data.insert(0, 'Filename', filename_column)
+        new_data.insert(0, 'Filename', FILENAME)
         
     try:
         # Try to read the existing file
