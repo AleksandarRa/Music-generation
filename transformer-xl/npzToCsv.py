@@ -71,15 +71,15 @@ FILENAMES = ['138', '255', '341', '346']
 for FILENAME in FILENAMES:
     CSVName = f"{APPROACH}approach{FILENAME}NpzData1500.csv"
 
-    npz_filenames_fullSong = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/npz/fullSong/").rglob(FILENAME+'.npz'))
+    npz_filenames_fullSong = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/preprocessingTest/1_npz/").rglob(FILENAME+'.npz'))
     file_names_without_extension_fullSong = [file.stem for file in npz_filenames_fullSong]
     file_names_array_fullSong = np.array(file_names_without_extension_fullSong)
 
-    npz_filenames_1 = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/npz/0-1500/").rglob(FILENAME+'npz_0-1500.npz'))
+    npz_filenames_1 = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/preprocessingTest/3_npz/").rglob(FILENAME+'.npz'))
     file_names_without_extension_1 = [file.stem for file in npz_filenames_1]
     file_names_array_1 = np.array(file_names_without_extension_1)
 
-    npz_filenames_2 = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/npz/1500-3000/").rglob(FILENAME+'npz_1500-3000.npz'))
+    npz_filenames_2 = list(pathlib.Path("data/analysedData/"+str(APPROACH)+"approach/preprocessingTest/3_npz/").rglob(FILENAME+'.npz'))
     file_names_without_extension_2 = [file.stem for file in npz_filenames_2]
     file_names_array_2 = np.array(file_names_without_extension_2)
 
@@ -102,34 +102,34 @@ for FILENAME in FILENAMES:
                                for filename in npz_filenames_2])
 
     # Subtracting sounds_full_1cut - sounds_1, and so on
-    sounds_diff_1 = subtract_tuples(sounds_full_1cut, sounds_1)
-    deltas_diff_1 = subtract_tuples(deltas_full_1cut, deltas_1)
+    #sounds_diff_1 = subtract_tuples(sounds_full_1cut, sounds_1)
+    #deltas_diff_1 = subtract_tuples(deltas_full_1cut, deltas_1)
 
-    sounds_diff_2 = subtract_tuples(sounds_full_2cut, sounds_2)
-    deltas_diff_2 = subtract_tuples(deltas_full_2cut, deltas_2)
+    #sounds_diff_2 = subtract_tuples(sounds_full_2cut, sounds_2)
+    #deltas_diff_2 = subtract_tuples(deltas_full_2cut, deltas_2)
 
-    columnName =["true label sound 0-1500"]
-    append_tuple_to_csv(sounds_full_1cut, CSVName, columnName, True)
-    columnName =["true label delta 0-1500"]
-    append_tuple_to_csv(deltas_full_1cut, CSVName, columnName)
+    columnName =["true label sound"]
+    append_tuple_to_csv(sounds_full, CSVName, columnName, True)
+    columnName =["true label delta"]
+    append_tuple_to_csv(deltas_full, CSVName, columnName)
 
-    columnName =["true label sound 1500-3000"]
-    append_tuple_to_csv(sounds_full_2cut, CSVName , columnName)
-    columnName =["true label delta 1500-3000"]
-    append_tuple_to_csv(deltas_full_2cut, CSVName, columnName)
-
-    columnName = ["cutted sound 0-1500"]
-    append_tuple_to_csv(sounds_1, CSVName, columnName)
-    columnName = ["cutted delta 0-1500"]
+    columnName =["preprocessed sound"]
+    append_tuple_to_csv(sounds_1, CSVName , columnName)
+    columnName =["preprocessed delta"]
     append_tuple_to_csv(deltas_1, CSVName, columnName)
 
-    columnName = ["cutted sound 1500-3000"]
-    append_tuple_to_csv(sounds_2, CSVName, columnName)
-    columnName = ["cutted delta 1500-3000"]
-    append_tuple_to_csv(deltas_2, CSVName, columnName)
+    #columnName = ["cutted sound 0-1500"]
+    #append_tuple_to_csv(sounds_1, CSVName, columnName)
+    #columnName = ["cutted delta 0-1500"]
+    #append_tuple_to_csv(deltas_1, CSVName, columnName)
+
+    #columnName = ["cutted sound 1500-3000"]
+    #append_tuple_to_csv(sounds_2, CSVName, columnName)
+    #columnName = ["cutted delta 1500-3000"]
+    #append_tuple_to_csv(deltas_2, CSVName, columnName)
 
     # Example Usage
     csv_files = [f"{APPROACH}approach{FILENAME}NpzData1500.csv", f"{APPROACH}approach{FILENAME}NpzData1500.csv", f"{APPROACH}approach{FILENAME}NpzData1500.csv",f"{APPROACH}approach{FILENAME}NpzData1500.csv"]  # List of CSV file paths
-    output_file = f"data/analysedData/{APPROACH}approach/npz/npzArrayData.csv"  # Path to save the merged CSV
+    output_file = f"data/analysedData/{APPROACH}approach/preprocessingTest/3_npz/npzArrayData.csv"  # Path to save the merged CSV
 
     merge_csv_files(csv_files, output_file)
